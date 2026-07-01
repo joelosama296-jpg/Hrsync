@@ -58,3 +58,11 @@ app.listen(PORT, () => {
     console.log('');
 });
 module.exports = app;
+
+// Production deployment layer: Serve static UI views directly from node
+const express = require('express');
+app.use(express.static(path.join(__dirname, 'frontend')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
