@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HRSync — Apply Now</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:#08091a;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background-image:radial-gradient(ellipse at 20% 50%,rgba(0,100,255,0.08) 0%,transparent 55%),radial-gradient(ellipse at 80% 20%,rgba(0,200,150,0.07) 0%,transparent 55%);}
+.wrap{width:100%;max-width:520px;}
+.logo{text-align:center;margin-bottom:26px;}
+.logo h1{font-size:1.9rem;font-weight:800;color:#fff;}
+.logo h1 span{color:#00c896;}
+.logo p{color:rgba(255,255,255,0.28);font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;margin-top:5px;}
+.card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:30px 28px;box-shadow:0 24px 56px rgba(0,0,0,0.5);}
+.step{display:none;}.step.active{display:block;}
+.step-head{margin-bottom:20px;}
+.step-head h2{font-size:1.1rem;font-weight:700;}
+.step-head p{color:rgba(255,255,255,0.35);font-size:0.77rem;margin-top:4px;}
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:0.62rem;color:rgba(255,255,255,0.32);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.fg input,.fg select{width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:9px;color:#fff;font-size:0.87rem;outline:none;transition:border-color 0.2s;}
+.fg input:focus,.fg select:focus{border-color:#00c896;}
+.fg input::placeholder{color:rgba(255,255,255,0.18);}
+select option{background:#08091a;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn{width:100%;padding:13px;border:none;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all 0.2s;margin-top:4px;}
+.bp{background:linear-gradient(135deg,#00c896,#0052ff);color:#fff;}.bp:hover{opacity:0.88;}
+.bp:disabled{opacity:0.45;cursor:not-allowed;}
+.bs{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.08);}
+.em{background:rgba(255,50,50,0.09);border:1px solid rgba(255,50,50,0.28);color:#ff8080;padding:10px 14px;border-radius:8px;font-size:0.8rem;margin-top:10px;display:none;}
+.ok{background:rgba(0,200,150,0.09);border:1px solid rgba(0,200,150,0.28);color:#00c896;padding:10px 14px;border-radius:8px;font-size:0.8rem;margin-top:10px;display:none;}
+.pill{display:inline-block;background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.25);color:#00c896;padding:4px 13px;border-radius:20px;font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+.kbox{background:rgba(0,200,150,0.06);border:2px dashed rgba(0,200,150,0.3);border-radius:10px;padding:14px 16px;margin-bottom:16px;text-align:center;}
+.kbox .kc{font-size:1.2rem;font-weight:700;color:#00c896;letter-spacing:3px;}
+.kbox .kd{font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:4px;}
+.div{height:1px;background:linear-gradient(to right,transparent,rgba(255,255,255,0.08),transparent);margin:18px 0;}
+.back{color:rgba(255,255,255,0.35);font-size:0.76rem;cursor:pointer;text-align:center;margin-top:12px;}
+.back:hover{color:#00c896;}
+.foot{text-align:center;margin-top:18px;color:rgba(255,255,255,0.14);font-size:0.66rem;}
+.chk{display:flex;align-items:flex-start;gap:9px;margin-bottom:9px;}
+.chk input[type=checkbox]{width:15px;height:15px;accent-color:#00c896;margin-top:2px;cursor:pointer;flex-shrink:0;}
+.chk label{font-size:0.77rem;color:rgba(255,255,255,0.5);line-height:1.6;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">
+    <h1 id="co-nm">HR<span>Sync</span></h1>
+    <p id="co-tg">Recruitment Portal</p>
+  </div>
+
+  <div class="card">
+
+    <!-- STEP 1: Enter Key -->
+    <div class="step active" id="step1">
+      <div class="step-head">
+        <span class="pill">Step 1 of 3</span>
+        <h2>Enter Your Invitation Key</h2>
+        <p>HR will have given you an invitation key to apply for a position.</p>
+      </div>
+      <div class="fg">
+        <label>Invitation Key</label>
+        <input id="key-inp" placeholder="e.g. RCT-2026-OPS-DEMO" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;" />
+      </div>
+      <button class="btn bp" onclick="validateKey()">VALIDATE KEY →</button>
+      <div class="em" id="k-err"></div>
+      <div class="div"></div>
+      <div style="text-align:center;">
+        <a href="/" style="color:rgba(255,255,255,0.3);font-size:0.75rem;text-decoration:none;">← Back to login</a>
+        &nbsp;·&nbsp;
+        <a href="/floor-register.html" style="color:rgba(255,255,255,0.3);font-size:0.75rem;text-decoration:none;">Already approved? Set up account →</a>
+      </div>
+    </div>
+
+    <!-- STEP 2: Fill Application -->
+    <div class="step" id="step2">
+      <div class="step-head">
+        <span class="pill">Step 2 of 3</span>
+        <h2>Your Application</h2>
+        <p>Complete all required fields. HR will review your details before approval.</p>
+      </div>
+      <div class="kbox">
+        <div class="kc" id="s2-key">--</div>
+        <div class="kd" id="s2-role">--</div>
+      </div>
+      <div class="fg"><label>Full Name <span style="color:#ff8080;">*</span></label><input id="a-name" placeholder="Your full legal name" /></div>
+      <div class="fr">
+        <div class="fg"><label>NIN (National ID) <span style="color:#ff8080;">*</span></label><input id="a-nin" placeholder="CM900..." style="text-transform:uppercase;" /></div>
+        <div class="fg"><label>Date of Birth</label><input type="date" id="a-dob" /></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Gender</label><select id="a-gender"><option value="">Select...</option><option>MALE</option><option>FEMALE</option><option>OTHER</option></select></div>
+        <div class="fg"><label>Phone <span style="color:#ff8080;">*</span></label><input id="a-phone" placeholder="07XXXXXXXX" /></div>
+      </div>
+      <div class="fg"><label>Email</label><input id="a-email" type="email" placeholder="your@email.com" /></div>
+      <div class="fg"><label>Physical Address</label><input id="a-addr" placeholder="e.g. Ntinda, Kampala" /></div>
+      <div class="div"></div>
+      <div class="fg"><label>Set Login Password <span style="color:#ff8080;">*</span></label><input type="password" id="a-pwd" placeholder="Min 6 characters" /></div>
+      <div class="fg"><label>Confirm Password <span style="color:#ff8080;">*</span></label><input type="password" id="a-pwd2" placeholder="Repeat password" /></div>
+      <div class="div"></div>
+      <div class="chk"><input type="checkbox" id="chk1" /><label for="chk1">I declare all information provided is true and accurate. I understand that providing false information is grounds for disqualification.</label></div>
+      <div class="chk"><input type="checkbox" id="chk2" /><label for="chk2">I consent to the collection and processing of my personal data for recruitment purposes.</label></div>
+      <button class="btn bp" id="sub-btn" onclick="submitApp()">SUBMIT APPLICATION →</button>
+      <div class="em" id="a-err"></div>
+      <div class="ok" id="a-ok"></div>
+      <div class="back" onclick="goStep(1)">← Back</div>
+    </div>
+
+    <!-- STEP 3: Submitted -->
+    <div class="step" id="step3">
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:3rem;margin-bottom:16px;">✅</div>
+        <h2 style="font-size:1.2rem;margin-bottom:10px;">Application Submitted!</h2>
+        <p style="color:rgba(255,255,255,0.4);font-size:0.82rem;line-height:1.8;margin-bottom:20px;">
+          Thank you, <strong style="color:#fff;" id="s3-name">--</strong>.<br>
+          Your application for <strong style="color:#00c896;" id="s3-role">--</strong> is now under review.<br><br>
+          HR will contact you once approved and assign your Work ID.<br>
+          You can then login using your Work ID and the password you set.
+        </p>
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px;font-size:0.78rem;color:rgba(255,255,255,0.35);margin-bottom:20px;text-align:left;line-height:1.8;">
+          <strong style="color:rgba(255,255,255,0.6);">What happens next:</strong><br>
+          1. HR reviews your application<br>
+          2. HR assigns you a Work ID<br>
+          3. You can login at the main portal using your Work ID + password
+        </div>
+        <a href="/" style="display:inline-block;padding:11px 28px;background:linear-gradient(135deg,#00c896,#0052ff);border-radius:10px;color:#fff;text-decoration:none;font-weight:700;font-size:0.88rem;letter-spacing:1px;">Go to Login →</a>
+      </div>
+    </div>
+
+  </div><!-- /card -->
+  <div class="foot">Sovereign Civic Tech — Uganda 🇺🇬 &nbsp;|&nbsp; HRSync v1.0</div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let activeKey='', activeRole='';
+
+// Brand
+(async()=>{
+  try{
+    const r=await fetch('/api/employees/settings');
+    if(!r.ok)return;
+    const s=await r.json();
+    if(s.company_name){ $('co-nm').textContent=s.company_name; document.title=s.company_name+' — Apply Now'; }
+    if(s.tagline)  $('co-tg').textContent=s.tagline;
+    if(s.primary_color) document.documentElement.style.setProperty('--a',s.primary_color);
+  }catch(_){}
+})();
+
+function goStep(n){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  $('step'+n).classList.add('active');
+}
+
+async function validateKey(){
+  const key=$('key-inp').value.trim().toUpperCase();
+  const err=$('k-err');
+  err.style.display='none';
+  if(!key){ err.textContent='Please enter your invitation key.'; err.style.display='block'; return; }
+  try{
+    const r=await fetch('/api/recruitment/validate-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key_code:key})});
+    const d=await r.json();
+    if(r.ok){
+      activeKey=d.key.key_code; activeRole=d.key.vacancy_title+' — '+d.key.department;
+      $('s2-key').textContent=activeKey;
+      $('s2-role').textContent=activeRole;
+      goStep(2);
+    }else{
+      err.textContent=d.message||'Invalid key.'; err.style.display='block';
+    }
+  }catch(e){ err.textContent='Cannot reach server.'; err.style.display='block'; }
+}
+$('key-inp').addEventListener('keypress',e=>{ if(e.key==='Enter') validateKey(); });
+
+async function submitApp(){
+  const err=$('a-err'),ok=$('a-ok'),btn=$('sub-btn');
+  err.style.display='none'; ok.style.display='none';
+  const name=$('a-name').value.trim(), nin=$('a-nin').value.trim().toUpperCase(),
+        pwd=$('a-pwd').value, pwd2=$('a-pwd2').value;
+  if(!name||!nin||!pwd){ err.textContent='Full name, NIN and password are required.'; err.style.display='block'; return; }
+  if(pwd.length<6){ err.textContent='Password must be at least 6 characters.'; err.style.display='block'; return; }
+  if(pwd!==pwd2){ err.textContent='Passwords do not match.'; err.style.display='block'; return; }
+  if(!$('chk1').checked||!$('chk2').checked){ err.textContent='Please agree to both declarations to continue.'; err.style.display='block'; return; }
+  btn.disabled=true; btn.textContent='Submitting...';
+  const body={
+    key_code:activeKey, full_name:name, nin,
+    phone:$('a-phone').value.trim(), email:$('a-email').value.trim(),
+    date_of_birth:$('a-dob').value, gender:$('a-gender').value,
+    address:$('a-addr').value.trim(), password:pwd
+  };
+  try{
+    const r=await fetch('/api/recruitment/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(r.ok){
+      $('s3-name').textContent=name;
+      $('s3-role').textContent=activeRole;
+      goStep(3);
+    }else{
+      err.textContent=d.message||'Submission failed.'; err.style.display='block';
+      btn.disabled=false; btn.textContent='SUBMIT APPLICATION →';
+    }
+  }catch(e){
+    err.textContent='Error: '+e.message; err.style.display='block';
+    btn.disabled=false; btn.textContent='SUBMIT APPLICATION →';
+  }
+}
+</script>
+</body>
+</html>

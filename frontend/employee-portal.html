@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HRSync — Employee Portal</title>
+<style>
+:root{--a:#00c896;--a2:#0052ff;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:#08091a;color:#fff;display:flex;min-height:100vh;}
+.sb{width:240px;background:rgba(0,0,0,0.35);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
+.sb-logo{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.sb-logo h1{font-size:1.2rem;font-weight:800;letter-spacing:1px;}
+.sb-logo h1 span{color:var(--a);}
+.sb-logo p{color:rgba(255,255,255,0.25);font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;margin-top:3px;}
+.sb-user{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px;}
+.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--a2));display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0;overflow:hidden;cursor:pointer;position:relative;border:2px solid rgba(0,200,150,0.3);}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.avatar-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;font-size:0.55rem;text-align:center;color:#fff;}
+.avatar:hover .avatar-overlay{display:flex;}
+.sb-user-info .nm{font-size:0.85rem;font-weight:600;}
+.sb-user-info .wid{font-size:0.65rem;color:var(--a);letter-spacing:1px;margin-top:2px;}
+.sb-user-info .dept{font-size:0.65rem;color:rgba(255,255,255,0.28);margin-top:1px;}
+.nav{flex:1;padding:10px 0;}
+.ns{padding:10px 18px 3px;font-size:0.58rem;color:rgba(255,255,255,0.2);letter-spacing:3px;text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:9px;padding:10px 18px;color:rgba(255,255,255,0.42);cursor:pointer;transition:all 0.2s;font-size:0.82rem;border-left:3px solid transparent;position:relative;}
+.ni:hover,.ni.active{color:#fff;background:rgba(255,255,255,0.04);border-left-color:var(--a);}
+.bc{background:#ff4444;color:#fff;border-radius:50%;min-width:16px;height:16px;font-size:0.55rem;display:flex;align-items:center;justify-content:center;position:absolute;right:10px;font-weight:700;padding:0 3px;}
+.lo{padding:12px 18px;border-top:1px solid rgba(255,255,255,0.06);}
+.btn-lo{width:100%;padding:8px;background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.2);border-radius:7px;color:#ff6b6b;font-size:0.75rem;cursor:pointer;}
+.main{margin-left:240px;flex:1;padding:26px 30px;}
+.ph{margin-bottom:18px;display:flex;justify-content:space-between;align-items:flex-start;}
+.ph h2{font-size:1.25rem;font-weight:700;}
+.ph p{color:rgba(255,255,255,0.32);font-size:0.74rem;margin-top:3px;}
+.sec{display:none;}.sec.active{display:block;}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:18px;}
+.sc{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;}
+.sc .lbl{font-size:0.64rem;color:rgba(255,255,255,0.32);letter-spacing:1px;text-transform:uppercase;}
+.sc .val{font-size:1.55rem;font-weight:700;color:var(--a);margin:5px 0 2px;}
+.sc .sub{font-size:0.66rem;color:rgba(255,255,255,0.22);}
+.panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:17px;margin-bottom:13px;}
+.panel h3{font-size:0.87rem;font-weight:600;margin-bottom:13px;color:rgba(255,255,255,0.7);}
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px;}
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:0.62rem;color:rgba(255,255,255,0.32);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:7px;color:#fff;font-size:0.82rem;outline:none;transition:border-color 0.2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--a);}
+select option{background:#08091a;}
+textarea{resize:vertical;min-height:72px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.btn{padding:8px 15px;border-radius:7px;border:none;font-size:0.77rem;cursor:pointer;font-weight:600;transition:all 0.2s;}
+.bp{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;}.bp:hover{opacity:0.88;}
+.bs{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.55);border:1px solid rgba(255,255,255,0.08);}
+.bd{background:rgba(255,50,50,0.1);color:#ff6b6b;border:1px solid rgba(255,50,50,0.2);}
+.bsm{padding:4px 10px;font-size:0.71rem;}
+.sm{background:rgba(0,200,150,0.08);border:1px solid rgba(0,200,150,0.28);color:#00c896;padding:9px 13px;border-radius:7px;font-size:0.78rem;margin-top:9px;display:none;}
+.em{background:rgba(255,50,50,0.08);border:1px solid rgba(255,50,50,0.28);color:#ff8080;padding:9px 13px;border-radius:7px;font-size:0.78rem;margin-top:9px;display:none;}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:0.63rem;font-weight:600;}
+.ba{background:rgba(0,200,150,0.15);color:#00c896;}
+.bp2{background:rgba(255,200,0,0.15);color:#ffc800;}
+.brj{background:rgba(255,50,50,0.15);color:#ff6b6b;}
+.bsp{background:rgba(255,107,53,0.15);color:#ff6b35;}
+.empty{text-align:center;padding:22px;color:rgba(255,255,255,0.2);font-size:0.76rem;}
+/* SIGNATURE */
+.sig-box{background:rgba(0,200,150,0.04);border:2px dashed rgba(0,200,150,0.25);border-radius:10px;padding:16px;margin-top:12px;}
+.sig-box p{font-size:0.75rem;color:rgba(255,255,255,0.4);margin-bottom:10px;line-height:1.6;}
+.sig-input{width:100%;padding:10px 13px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:0.88rem;outline:none;margin-bottom:10px;font-family:'Segoe UI',sans-serif;}
+.sig-input:focus{border-color:var(--a);}
+.sig-preview{font-family:'Georgia',serif;font-size:1.4rem;color:var(--a);padding:8px 0;border-bottom:1px solid rgba(0,200,150,0.3);min-height:38px;opacity:0.8;font-style:italic;}
+/* READ MODAL */
+.mo{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:1000;display:none;align-items:center;justify-content:center;}
+.mo.show{display:flex;}
+.md{background:#0d1525;border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:26px;width:95%;max-width:600px;max-height:88vh;overflow-y:auto;}
+.md h3{font-size:1rem;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.md-body{font-size:0.83rem;color:rgba(255,255,255,0.55);line-height:1.85;white-space:pre-wrap;margin-bottom:16px;}
+/* PROFILE PHOTO */
+.photo-wrap{text-align:center;margin-bottom:16px;}
+.photo-big{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--a2));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;margin:0 auto 10px;overflow:hidden;border:3px solid rgba(0,200,150,0.3);}
+.photo-big img{width:100%;height:100%;object-fit:cover;}
+/* GATE */
+#sct-gate{display:none;position:fixed;inset:0;z-index:99999;background:rgba(6,9,20,0.97);align-items:center;justify-content:center;}
+.gbox{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:42px 38px;max-width:440px;width:90%;text-align:center;}
+.gicon{font-size:2.8rem;margin-bottom:14px;}
+.gprod{font-size:0.66rem;color:rgba(255,255,255,0.3);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;}
+.ghl{color:#fff;font-size:1.22rem;font-weight:700;margin-bottom:10px;}
+.gmsg{color:rgba(255,255,255,0.44);font-size:0.82rem;line-height:1.75;margin-bottom:22px;}
+.ginp{width:100%;padding:12px 15px;margin-bottom:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#fff;font-size:0.9rem;outline:none;font-family:monospace;letter-spacing:1px;text-transform:uppercase;box-sizing:border-box;}
+.gbtn{width:100%;padding:13px;margin-bottom:12px;background:linear-gradient(135deg,var(--a),var(--a2));border:none;border-radius:10px;color:#fff;font-size:0.92rem;font-weight:700;cursor:pointer;letter-spacing:1px;}
+.gerr{display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;padding:10px 14px;border-radius:8px;font-size:0.79rem;margin-bottom:11px;text-align:left;}
+.gok{display:none;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#86efac;padding:10px 14px;border-radius:8px;font-size:0.79rem;margin-bottom:11px;text-align:left;}
+.gfoot{font-size:0.7rem;color:rgba(255,255,255,0.2);line-height:1.8;}
+#sct-warn{display:none;background:rgba(245,158,11,0.09);border-bottom:1px solid rgba(245,158,11,0.25);color:#fcd34d;padding:9px 20px;font-size:0.78rem;text-align:center;}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pf label{font-size:0.61rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;}
+.pf p{font-size:0.83rem;margin-top:2px;background:rgba(255,255,255,0.04);padding:7px 11px;border-radius:7px;min-height:32px;}
+</style>
+</head>
+<body>
+
+<!-- GATE -->
+<div id="sct-gate">
+  <div class="gbox">
+    <div class="gicon" id="g-icon">🔒</div>
+    <div class="gprod">HRSync — Sovereign Civic Tech</div>
+    <div class="ghl" id="g-hl">System Unavailable</div>
+    <div class="gmsg" id="g-msg">This system is temporarily unavailable. Please contact your HR Admin for assistance.</div>
+    <div class="gerr" id="g-err"></div>
+    <div class="gok"  id="g-ok"></div>
+    <div class="gfoot">Sovereign Civic Tech — Uganda 🇺🇬</div>
+  </div>
+</div>
+<div id="sct-warn"></div>
+
+<!-- READ MODAL -->
+<div class="mo" id="readMo">
+  <div class="md">
+    <h3 id="mo-title">--</h3>
+    <div class="md-body" id="mo-body"></div>
+    <div id="mo-sig-wrap"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+      <button class="btn bd bsm" id="mo-del-btn" style="display:none;" onclick="moDelete()">🗑️ Delete</button>
+      <button class="btn bs bsm" onclick="closeMo()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sb">
+  <div class="sb-logo">
+    <h1 id="co-nm">HR<span>Sync</span></h1>
+    <p  id="co-tg">Employee Portal</p>
+  </div>
+  <div class="sb-user">
+    <div class="avatar" id="sideAvatar" onclick="S('profile',document.querySelectorAll('.ni')[1])" title="Click to update profile photo">
+      <span id="sideInitial">?</span>
+      <div class="avatar-overlay">📷<br>Change</div>
+    </div>
+    <div class="sb-user-info">
+      <div class="nm"  id="u-nm">Loading...</div>
+      <div class="wid" id="u-wid"></div>
+      <div class="dept" id="u-dept"></div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="ns">My Portal</div>
+    <div class="ni active" onclick="S('home',this)">🏠 Home</div>
+    <div class="ni" onclick="S('profile',this)">👤 My Profile</div>
+    <div class="ni" onclick="S('leave',this)">📅 Leave</div>
+    <div class="ni" onclick="S('payslips',this)">💰 Payslips</div>
+    <div class="ni" onclick="S('messages',this)" style="position:relative;">
+      💬 Messages
+      <span class="bc" id="msg-bc" style="display:none;">0</span>
+    </div>
+    <div class="ni" onclick="S('warnings',this)">⚠️ Warnings</div>
+    <div class="ns">Company</div>
+    <div class="ni" onclick="S('policies',this)">📋 Policies</div>
+    <div class="ni" onclick="S('documents',this)">📁 My Documents</div>
+    <div class="ns">Account</div>
+    <div class="ni" onclick="S('password',this)">🔑 Change Password</div>
+  </nav>
+  <div class="lo"><button class="btn-lo" onclick="logout()">Sign Out</button></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- HOME -->
+<div class="sec active" id="sec-home">
+  <div class="ph">
+    <div><h2>Welcome back, <span id="g-nm">--</span> 👋</h2><p id="g-dt"></p></div>
+    <button class="btn bp" onclick="S('leave',document.querySelectorAll('.ni')[2])">+ Request Leave</button>
+  </div>
+  <div id="sub-warn-home" style="display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);color:#fcd34d;padding:10px 16px;border-radius:9px;font-size:0.79rem;margin-bottom:14px;"></div>
+  <div class="sg">
+    <div class="sc"><div class="lbl">Annual Leave Left</div><div class="val" id="h-ann">--</div><div class="sub">days remaining</div></div>
+    <div class="sc"><div class="lbl">Sick Leave Left</div><div class="val" id="h-sick">--</div><div class="sub">days remaining</div></div>
+    <div class="sc"><div class="lbl">Unread Messages</div><div class="val" id="h-msg">0</div><div class="sub">from HR</div></div>
+  </div>
+  <div class="panels">
+    <div class="panel">
+      <h3>⚡ Quick Actions</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn bp" onclick="S('leave',document.querySelectorAll('.ni')[2])" style="width:100%;text-align:left;">📅 Request Leave</button>
+        <button class="btn bs" onclick="S('profile',document.querySelectorAll('.ni')[1])" style="width:100%;text-align:left;">👤 Update My Profile</button>
+        <button class="btn bs" onclick="S('payslips',document.querySelectorAll('.ni')[3])" style="width:100%;text-align:left;">💰 View Payslips</button>
+        <button class="btn bs" onclick="S('documents',document.querySelectorAll('.ni')[7])" style="width:100%;text-align:left;">📁 Upload Document</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>📨 Recent Messages from HR</h3>
+      <div id="home-msgs" class="empty">Loading...</div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>📅 My Recent Leave Requests</h3>
+    <div id="home-leave" class="empty">Loading...</div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="sec" id="sec-profile">
+  <div class="ph"><div><h2>👤 My Profile</h2><p>Update your contact details. Core info is managed by HR.</p></div></div>
+  <div class="panels">
+    <div class="panel">
+      <h3>Profile Photo</h3>
+      <div class="photo-wrap">
+        <div class="photo-big" id="photoBig"><span id="photoInitial">?</span></div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-bottom:10px;">Click photo in sidebar to update</div>
+      </div>
+      <div class="fg"><label>Upload New Photo</label><input type="file" id="photoFile" accept="image/jpeg,image/png,image/webp" style="padding:6px;" /></div>
+      <button class="btn bp" onclick="uploadPhoto()" style="width:100%">UPDATE PHOTO</button>
+      <div class="sm" id="photo-ok"></div><div class="em" id="photo-err"></div>
+    </div>
+    <div class="panel">
+      <h3>Personal Information</h3>
+      <div class="pg" id="prof-view"></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>✏️ Update My Details</h3>
+    <p style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-bottom:14px;">Changes notify HR for review.</p>
+    <div class="fr">
+      <div class="fg"><label>Phone</label><input id="p-phone" placeholder="e.g. 0789000000" /></div>
+      <div class="fg"><label>Email</label><input id="p-email" placeholder="your@email.com" /></div>
+    </div>
+    <div class="fg"><label>Address</label><input id="p-addr" placeholder="e.g. Ntinda, Kampala" /></div>
+    <div class="fr">
+      <div class="fg"><label>Bank Name</label><input id="p-bank" placeholder="e.g. Stanbic Bank" /></div>
+      <div class="fg"><label>Account Number</label><input id="p-acc" placeholder="Account number" /></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>NOK Name</label><input id="p-nok" placeholder="Next of kin name" /></div>
+      <div class="fg"><label>NOK Phone</label><input id="p-nokph" placeholder="NOK phone" /></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>NOK Relationship</label><input id="p-nokrel" placeholder="e.g. Mother, Brother" /></div>
+      <div class="fg"><label>Blood Type</label>
+        <select id="p-blood"><option value="">Select...</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select>
+      </div>
+    </div>
+    <button class="btn bp" onclick="updateProfile()" style="width:100%">SUBMIT UPDATES TO HR</button>
+    <div class="sm" id="prof-ok"></div><div class="em" id="prof-err"></div>
+  </div>
+</div>
+
+<!-- LEAVE -->
+<div class="sec" id="sec-leave">
+  <div class="ph"><h2>📅 Leave Requests</h2></div>
+  <div class="panels">
+    <div class="panel">
+      <h3>+ Apply for Leave</h3>
+      <div class="fg"><label>Leave Type</label>
+        <select id="l-type">
+          <option value="ANNUAL">Annual Leave</option>
+          <option value="SICK">Sick Leave</option>
+          <option value="MATERNITY">Maternity Leave</option>
+          <option value="PATERNITY">Paternity Leave</option>
+          <option value="COMPASSIONATE">Compassionate Leave</option>
+          <option value="EMERGENCY">Emergency Leave</option>
+        </select>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Start Date</label><input type="date" id="l-start" /></div>
+        <div class="fg"><label>End Date</label><input type="date" id="l-end" /></div>
+      </div>
+      <div class="fg"><label>Reason (optional)</label><textarea id="l-reason" placeholder="Brief reason..."></textarea></div>
+      <button class="btn bp" onclick="submitLeave()" style="width:100%">SUBMIT REQUEST</button>
+      <div class="sm" id="l-ok"></div><div class="em" id="l-err"></div>
+      <div style="margin-top:14px;background:rgba(255,255,255,0.025);border-radius:9px;padding:12px 14px;">
+        <div style="font-size:0.67rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Leave Balance</div>
+        <div style="display:flex;gap:16px;">
+          <div><div style="font-size:1.1rem;font-weight:700;color:var(--a);" id="bal-ann">--</div><div style="font-size:0.66rem;color:rgba(255,255,255,0.3);">Annual days left</div></div>
+          <div><div style="font-size:1.1rem;font-weight:700;color:#ffc800;" id="bal-sick">--</div><div style="font-size:0.66rem;color:rgba(255,255,255,0.3);">Sick days left</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel"><h3>My Leave History</h3><div id="leave-hist" class="empty">Loading...</div></div>
+  </div>
+</div>
+
+<!-- PAYSLIPS -->
+<div class="sec" id="sec-payslips">
+  <div class="ph"><h2>💰 My Payslips</h2></div>
+  <div class="panel"><div id="pay-list" class="empty">Loading...</div></div>
+</div>
+
+<!-- MESSAGES -->
+<div class="sec" id="sec-messages">
+  <div class="ph">
+    <div><h2>💬 Messages from HR</h2></div>
+    <button class="btn bd bsm" onclick="clearReadMsgs()">🗑️ Clear Read</button>
+  </div>
+  <div class="panel"><div id="msg-list" class="empty">Loading...</div></div>
+</div>
+
+<!-- WARNINGS -->
+<div class="sec" id="sec-warnings">
+  <div class="ph"><h2>⚠️ Warning Letters</h2></div>
+  <div class="panel"><div id="warn-list" class="empty">Loading...</div></div>
+</div>
+
+<!-- POLICIES -->
+<div class="sec" id="sec-policies">
+  <div class="ph"><h2>📋 Company Policies</h2></div>
+  <div class="panel"><div id="pol-list" class="empty">Loading...</div></div>
+</div>
+
+<!-- DOCUMENTS -->
+<div class="sec" id="sec-documents">
+  <div class="ph"><h2>📁 My Documents</h2></div>
+  <div class="panels">
+    <div class="panel">
+      <h3>Upload Document</h3>
+      <div class="fg"><label>Document Type</label>
+        <select id="doc-type">
+          <option value="NID_SCAN">National ID (NIN) Scan</option>
+          <option value="CERTIFICATE">Certificate / Qualification</option>
+          <option value="CONTRACT">Contract</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+      <div class="fg"><label>Label / Description</label><input id="doc-label" placeholder="e.g. My A-Level Certificate" /></div>
+      <div class="fg"><label>File (max 5MB)</label><input type="file" id="doc-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="padding:6px;" /></div>
+      <button class="btn bp" onclick="uploadDoc()" style="width:100%">UPLOAD</button>
+      <div class="sm" id="doc-ok"></div><div class="em" id="doc-err"></div>
+    </div>
+    <div class="panel"><h3>Uploaded Documents</h3><div id="doc-list" class="empty">No documents yet.</div></div>
+  </div>
+</div>
+
+<!-- PASSWORD -->
+<div class="sec" id="sec-password">
+  <div class="ph"><h2>🔑 Change Password</h2></div>
+  <div class="panel" style="max-width:420px;">
+    <div class="fg"><label>Current Password</label><input type="password" id="pw-old" /></div>
+    <div class="fg"><label>New Password</label><input type="password" id="pw-new" /></div>
+    <div class="fg"><label>Confirm New Password</label><input type="password" id="pw-cf" /></div>
+    <button class="btn bp" onclick="changePwd()" style="width:100%">CHANGE PASSWORD</button>
+    <div class="sm" id="pw-ok"></div><div class="em" id="pw-err"></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+const $  = id => document.getElementById(id);
+const T  = localStorage.getItem('token');
+const NM = localStorage.getItem('name');
+const WD = localStorage.getItem('work_id');
+if(!T){ location.href='/'; throw ''; }
+const H  = {'x-auth-token':T,'Content-Type':'application/json'};
+
+// ── NAV
+function S(n,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  $('sec-'+n).classList.add('active');
+  document.querySelectorAll('.ni').forEach(i=>i.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(n==='home')     { loadHome(); }
+  if(n==='profile')  { loadProfile(); }
+  if(n==='leave')    { loadLeave(); loadBalance(); }
+  if(n==='payslips') { loadPayslips(); }
+  if(n==='messages') { loadMessages(); }
+  if(n==='warnings') { loadWarnings(); }
+  if(n==='policies') { loadPolicies(); }
+  if(n==='documents'){ loadDocs(); }
+}
+function logout(){ localStorage.clear(); location.href='/'; }
+
+// ── BRAND
+async function loadBrand(){
+  try{
+    const r=await fetch('/api/employees/settings');
+    if(!r.ok)return;
+    const s=await r.json();
+    if(s.company_name){ $('co-nm').textContent=s.company_name; document.title=s.company_name+' — Employee Portal'; }
+    if(s.tagline)  $('co-tg').textContent=s.tagline;
+    if(s.primary_color) document.documentElement.style.setProperty('--a',s.primary_color);
+  }catch(_){}
+}
+
+// ── HOME
+async function loadHome(){
+  $('g-nm').textContent = NM ? NM.split(' ')[0] : 'Employee';
+  $('g-dt').textContent  = new Date().toLocaleDateString('en-UG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  loadBalance(); loadRecentMsgs(); loadRecentLeave();
+}
+
+async function loadBalance(){
+  try{
+    const r=await fetch('/api/leave/balance',{headers:H});
+    const d=await r.json();
+    $('h-ann').textContent   = d.annual_balance??'--';
+    $('h-sick').textContent  = d.sick_balance??'--';
+    $('bal-ann').textContent = d.annual_balance??'--';
+    $('bal-sick').textContent= d.sick_balance??'--';
+  }catch(_){}
+}
+
+async function loadRecentMsgs(){
+  try{
+    const r=await fetch('/api/employees/messages/my',{headers:H});
+    const msgs=await r.json();
+    const unread=msgs.filter(m=>!m.read).length;
+    $('h-msg').textContent=unread;
+    $('msg-bc').textContent=unread;
+    $('msg-bc').style.display=unread?'flex':'none';
+    const el=$('home-msgs');
+    if(!msgs.length){ el.innerHTML='<div class="empty">No messages yet.</div>'; return; }
+    el.innerHTML=msgs.slice(0,4).map(m=>`
+      <div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;" onclick="openMsg('${m.id}','${encodeURIComponent(m.type||'Message')}','${encodeURIComponent(m.message)}')">
+        <div style="font-size:0.8rem;${m.read?'color:rgba(255,255,255,0.45)':'font-weight:600;'}">${m.message.length>60?m.message.substr(0,60)+'...':m.message}</div>
+        <div style="font-size:0.67rem;color:rgba(255,255,255,0.25);margin-top:2px;">${new Date(m.created_at).toLocaleDateString()} · <span class="badge ${m.read?'ba':'bp2'}">${m.read?'read':'new'}</span></div>
+      </div>`).join('');
+  }catch(_){}
+}
+
+async function loadRecentLeave(){
+  try{
+    const r=await fetch('/api/leave/my',{headers:H});
+    const leaves=await r.json();
+    const el=$('home-leave');
+    if(!leaves.length){ el.innerHTML='<div class="empty">No leave requests yet.</div>'; return; }
+    el.innerHTML=leaves.slice(0,4).map(l=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <div><div style="font-size:0.82rem;font-weight:600;">${l.leave_type} LEAVE</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.3);">${l.start_date} → ${l.end_date}</div></div>
+        <span class="badge ${l.status==='APPROVED'?'ba':l.status==='REJECTED'?'brj':'bp2'}">${l.status}</span>
+      </div>`).join('');
+  }catch(_){}
+}
+
+// ── PROFILE
+let myProfile={};
+async function loadProfile(){
+  try{
+    const r=await fetch('/api/employees/me',{headers:H});
+    if(!r.ok){ $('prof-view').innerHTML='<div class="empty">Profile not found. Contact HR.</div>'; return; }
+    myProfile=await r.json();
+    $('u-nm').textContent   = myProfile.full_name||NM||'--';
+    $('u-wid').textContent  = myProfile.work_id||WD||'';
+    $('u-dept').textContent = myProfile.department||'';
+    // Avatar
+    const initial = (myProfile.full_name||NM||'?')[0].toUpperCase();
+    $('sideInitial').textContent = initial;
+    $('photoInitial').textContent = initial;
+    if(myProfile.profile_photo){
+      $('sideAvatar').innerHTML=`<img src="${myProfile.profile_photo}" /><div class="avatar-overlay">📷<br>Change</div>`;
+      $('photoBig').innerHTML=`<img src="${myProfile.profile_photo}" />`;
+    }
+    const f=(l,v)=>`<div class="pf"><label>${l}</label><p>${v||'--'}</p></div>`;
+    $('prof-view').innerHTML=
+      f('Full Name',myProfile.full_name)+f('Work ID',myProfile.work_id)+
+      f('Job Title',myProfile.job_title)+f('Department',myProfile.department)+
+      f('NIN',myProfile.nin)+f('Date of Birth',myProfile.date_of_birth)+
+      f('Gender',myProfile.gender)+f('Email',myProfile.email)+
+      f('Phone',myProfile.phone)+f('Address',myProfile.address)+
+      f('Blood Type',myProfile.blood_type)+f('Bank',myProfile.bank_name)+
+      f('Account No.',myProfile.bank_account)+f('NOK Name',myProfile.nok_name)+
+      f('NOK Relationship',myProfile.nok_relationship)+f('NOK Phone',myProfile.nok_phone);
+    $('p-phone').value=$('p-email').value=$('p-addr').value=$('p-bank').value=$('p-acc').value=$('p-nok').value=$('p-nokph').value=$('p-nokrel').value='';
+    $('p-phone').value   = myProfile.phone||'';
+    $('p-email').value   = myProfile.email||'';
+    $('p-addr').value    = myProfile.address||'';
+    $('p-bank').value    = myProfile.bank_name||'';
+    $('p-acc').value     = myProfile.bank_account||'';
+    $('p-nok').value     = myProfile.nok_name||'';
+    $('p-nokph').value   = myProfile.nok_phone||'';
+    $('p-nokrel').value  = myProfile.nok_relationship||'';
+    $('p-blood').value   = myProfile.blood_type||'';
+  }catch(e){ $('prof-view').innerHTML='<div class="empty">Error loading profile.</div>'; }
+}
+
+async function updateProfile(){
+  const ok=$('prof-ok'),err=$('prof-err');
+  ok.style.display='none'; err.style.display='none';
+  const body={phone:$('p-phone').value.trim(),email:$('p-email').value.trim(),address:$('p-addr').value.trim(),bank_name:$('p-bank').value.trim(),bank_account:$('p-acc').value.trim(),nok_name:$('p-nok').value.trim(),nok_phone:$('p-nokph').value.trim(),nok_relationship:$('p-nokrel').value.trim(),blood_type:$('p-blood').value};
+  try{
+    const r=await fetch('/api/employees/me',{method:'PUT',headers:H,body:JSON.stringify(body)});
+    const d=await r.json();
+    if(r.ok){ok.textContent='✅ '+d.message;ok.style.display='block';loadProfile();}
+    else{err.textContent=d.message||'Update failed.';err.style.display='block';}
+  }catch(e){err.textContent='Error: '+e.message;err.style.display='block';}
+}
+
+async function uploadPhoto(){
+  const ok=$('photo-ok'),err=$('photo-err');
+  ok.style.display='none';err.style.display='none';
+  const file=$('photoFile').files[0];
+  if(!file){err.textContent='Please select an image file.';err.style.display='block';return;}
+  if(file.size>3*1024*1024){err.textContent='Image too large. Maximum 3MB.';err.style.display='block';return;}
+  const fd=new FormData();fd.append('photo',file);
+  try{
+    const r=await fetch('/api/employees/photo/upload',{method:'POST',headers:{'x-auth-token':T},body:fd});
+    const d=await r.json();
+    if(r.ok){ok.textContent='✅ Photo updated!';ok.style.display='block';loadProfile();}
+    else{err.textContent=d.message||'Upload failed.';err.style.display='block';}
+  }catch(e){err.textContent='Error: '+e.message;err.style.display='block';}
+}
+
+// ── LEAVE
+async function submitLeave(){
+  const ok=$('l-ok'),err=$('l-err');
+  ok.style.display='none';err.style.display='none';
+  const body={leave_type:$('l-type').value,start_date:$('l-start').value,end_date:$('l-end').value,reason:$('l-reason').value.trim()};
+  if(!body.start_date||!body.end_date){err.textContent='Please select start and end date.';err.style.display='block';return;}
+  if(body.end_date<body.start_date){err.textContent='End date cannot be before start date.';err.style.display='block';return;}
+  try{
+    const r=await fetch('/api/leave/submit',{method:'POST',headers:H,body:JSON.stringify(body)});
+    const d=await r.json();
+    if(r.ok){ok.textContent='✅ '+d.message;ok.style.display='block';$('l-start').value='';$('l-end').value='';$('l-reason').value='';loadLeave();loadBalance();}
+    else{err.textContent=d.message||'Submission failed.';err.style.display='block';}
+  }catch(e){err.textContent='Error: '+e.message;err.style.display='block';}
+}
+
+async function loadLeave(){
+  try{
+    const r=await fetch('/api/leave/my',{headers:H});const leaves=await r.json();
+    const el=$('leave-hist');
+    if(!leaves.length){el.innerHTML='<div class="empty">No leave requests yet.</div>';return;}
+    el.innerHTML=leaves.map(l=>`
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:9px;padding:12px 14px;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div><div style="font-size:0.86rem;font-weight:600;">${l.leave_type} LEAVE</div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:3px;">${l.start_date} → ${l.end_date}${l.reason?' | '+l.reason:''}</div></div>
+          <span class="badge ${l.status==='APPROVED'?'ba':l.status==='REJECTED'?'brj':'bp2'}">${l.status}</span>
+        </div>
+      </div>`).join('');
+  }catch(_){}
+}
+
+// ── PAYSLIPS
+async function loadPayslips(){
+  try{
+    const r=await fetch('/api/employees/payslips/my',{headers:H});const slips=await r.json();
+    const el=$('pay-list');
+    if(!slips.length){el.innerHTML='<div class="empty">No payslips yet. HR generates them monthly.</div>';return;}
+    const months=['','January','February','March','April','May','June','July','August','September','October','November','December'];
+    el.innerHTML=slips.map(s=>`
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:14px 16px;margin-bottom:9px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="font-size:0.9rem;font-weight:700;">${months[s.month]||s.month} ${s.year}</div>
+          <span class="badge ba">UGX ${Number(s.net_salary).toLocaleString()} net</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;font-size:0.73rem;color:rgba(255,255,255,0.45);">
+          <div>Gross<br><strong style="color:#fff;">UGX ${Number(s.gross_salary).toLocaleString()}</strong></div>
+          <div>PAYE<br><strong style="color:#ff8080;">-${Number(s.paye||0).toLocaleString()}</strong></div>
+          <div>NSSF<br><strong style="color:#ff8080;">-${Number(s.nssf_employee||0).toLocaleString()}</strong></div>
+          <div>LST<br><strong style="color:#ff8080;">-${Number(s.lst||0).toLocaleString()}</strong></div>
+        </div>
+      </div>`).join('');
+  }catch(_){}
+}
+
+// ── MESSAGES (with read modal + delete)
+let currentMsgId=null;
+async function loadMessages(){
+  try{
+    const r=await fetch('/api/employees/messages/my',{headers:H});const msgs=await r.json();
+    const unread=msgs.filter(m=>!m.read).length;
+    $('msg-bc').textContent=unread;$('msg-bc').style.display=unread?'flex':'none';
+    $('h-msg').textContent=unread;
+    const el=$('msg-list');
+    if(!msgs.length){el.innerHTML='<div class="empty">No messages from HR yet.</div>';return;}
+    el.innerHTML=msgs.map(m=>`
+      <div style="background:rgba(255,255,255,0.02);border:1px solid ${m.read?'rgba(255,255,255,0.06)':'rgba(0,200,150,0.2)'};border-radius:10px;padding:13px 15px;margin-bottom:8px;cursor:pointer;"
+        onclick="openMsg('${m.id}','${encodeURIComponent(m.type||'HR Message')}','${encodeURIComponent(m.message)}',true)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div style="flex:1;">
+            <div style="font-size:0.68rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">${m.type||'HR MESSAGE'}</div>
+            <div style="font-size:0.87rem;${m.read?'color:rgba(255,255,255,0.6)':'font-weight:600;'}">${m.message}</div>
+            <div style="font-size:0.68rem;color:rgba(255,255,255,0.25);margin-top:5px;">${new Date(m.created_at).toLocaleString()}</div>
+          </div>
+          <span class="badge ${m.read?'ba':'bp2'}" style="margin-left:10px;flex-shrink:0;">${m.read?'read':'new'}</span>
+        </div>
+      </div>`).join('');
+  }catch(_){}
+}
+
+async function openMsg(id,typeEnc,msgEnc,canDelete=false){
+  const type=decodeURIComponent(typeEnc), msg=decodeURIComponent(msgEnc);
+  currentMsgId=id;
+  $('mo-title').textContent=type.replace(/_/g,' ');
+  $('mo-body').textContent=msg;
+  $('mo-sig-wrap').innerHTML='';
+  $('mo-del-btn').style.display=canDelete?'block':'none';
+  $('mo-del-btn').onclick=()=>deleteMsg(id);
+  document.getElementById('readMo').classList.add('show');
+  // Mark as read
+  try{ await fetch(`/api/employees/messages/${id}/read`,{method:'PUT',headers:H}); loadMessages(); }catch(_){}
+}
+
+async function deleteMsg(id){
+  if(!confirm('Delete this message?')) return;
+  try{
+    await fetch(`/api/employees/messages/${id}`,{method:'DELETE',headers:H});
+    closeMo(); loadMessages(); loadRecentMsgs();
+  }catch(_){}
+}
+
+async function clearReadMsgs(){
+  if(!confirm('Delete all read messages?')) return;
+  try{
+    const r=await fetch('/api/employees/messages/my',{headers:H});
+    const msgs=await r.json();
+    const readMsgs=msgs.filter(m=>m.read);
+    await Promise.all(readMsgs.map(m=>fetch(`/api/employees/messages/${m.id}`,{method:'DELETE',headers:H})));
+    loadMessages(); loadRecentMsgs();
+  }catch(_){}
+}
+
+function closeMo(){ document.getElementById('readMo').classList.remove('show'); }
+
+// ── WARNINGS (with read modal + e-signature + delete)
+async function loadWarnings(){
+  try{
+    const r=await fetch('/api/employees/warnings/my',{headers:H});const warns=await r.json();
+    const el=$('warn-list');
+    if(!warns.length){el.innerHTML='<div class="empty">No warning letters on record. Keep it up! 🌟</div>';return;}
+    el.innerHTML=warns.map(w=>`
+      <div style="background:rgba(255,107,53,0.05);border:1px solid rgba(255,107,53,0.2);border-radius:10px;padding:14px 16px;margin-bottom:9px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span class="badge bsp">${w.warning_type}</span>
+          <span style="font-size:0.69rem;color:rgba(255,255,255,0.3);">${new Date(w.created_at).toLocaleDateString()}</span>
+        </div>
+        <div style="font-size:0.86rem;font-weight:600;margin-bottom:4px;">${w.reason}</div>
+        ${w.details?`<div style="font-size:0.77rem;color:rgba(255,255,255,0.4);margin-bottom:8px;">${w.details}</div>`:''}
+        <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+          <button class="btn bs bsm" onclick="openWarning('${w.id}','${encodeURIComponent(w.warning_type)}','${encodeURIComponent(w.reason+(w.details?'\n\n'+w.details:''))}','${w.acknowledged}','${encodeURIComponent(w.signature||'')}')">
+            📄 Read & ${w.acknowledged?'View Signature':'Sign'}
+          </button>
+          ${w.acknowledged?`<span class="badge ba">✅ Signed: ${w.signature||'--'}</span>`:'<span class="badge bp2">⏳ Awaiting signature</span>'}
+        </div>
+      </div>`).join('');
+  }catch(_){}
+}
+
+function openWarning(id,typeEnc,bodyEnc,acknowledged,sigEnc){
+  const type=decodeURIComponent(typeEnc), body=decodeURIComponent(bodyEnc), sig=decodeURIComponent(sigEnc);
+  const isAcknowledged=acknowledged==='true';
+  currentMsgId=id;
+  $('mo-title').textContent='⚠️ Warning Letter — '+type.replace(/_/g,' ');
+  $('mo-body').textContent=body;
+  $('mo-del-btn').style.display='none'; // employees can't delete warnings
+  // Signature section
+  if(isAcknowledged){
+    $('mo-sig-wrap').innerHTML=`
+      <div style="background:rgba(0,200,150,0.06);border:1px solid rgba(0,200,150,0.2);border-radius:9px;padding:14px;margin-top:12px;">
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">✅ Electronically signed</div>
+        <div style="font-family:'Georgia',serif;font-size:1.3rem;color:var(--a);font-style:italic;">${sig||'--'}</div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.25);margin-top:4px;">This signature is binding and recorded in the system.</div>
+      </div>`;
+  } else {
+    $('mo-sig-wrap').innerHTML=`
+      <div class="sig-box">
+        <p>By signing below you confirm you have read and understood this warning letter. Type your full name exactly as it appears on your National ID. This constitutes a legally binding electronic acknowledgement.</p>
+        <input class="sig-input" type="text" id="warnSigIn" placeholder="Type your full name to sign..." oninput="$('warnSigPrev').textContent=this.value||'Your signature will appear here'" />
+        <div class="sig-preview" id="warnSigPrev">Your signature will appear here</div>
+        <button class="btn bp" onclick="submitWarnSig('${id}')" style="width:100%;margin-top:12px;">✍️ SIGN & ACKNOWLEDGE</button>
+        <div class="sm" id="wsig-ok"></div><div class="em" id="wsig-err"></div>
+      </div>`;
+  }
+  document.getElementById('readMo').classList.add('show');
+}
+
+async function submitWarnSig(id){
+  const sig=$('warnSigIn')?.value.trim();
+  const ok=$('wsig-ok'),err=$('wsig-err');
+  if(ok) ok.style.display='none'; if(err) err.style.display='none';
+  if(!sig||sig.length<3){if(err){err.textContent='Please type your full name.';err.style.display='block';}return;}
+  try{
+    const r=await fetch(`/api/employees/warnings/${id}/sign`,{method:'PUT',headers:H,body:JSON.stringify({signature:sig})});
+    const d=await r.json();
+    if(r.ok){ if(ok){ok.textContent='✅ Signed successfully.';ok.style.display='block';} setTimeout(()=>{closeMo();loadWarnings();},1500); }
+    else{if(err){err.textContent=d.message;err.style.display='block';}}
+  }catch(e){if(err){err.textContent='Error.';err.style.display='block';}}
+}
+
+// ── POLICIES (expandable read + acknowledge)
+async function loadPolicies(){
+  try{
+    const r=await fetch('/api/employees/policies',{headers:H});const pols=await r.json();
+    const el=$('pol-list');
+    if(!pols.length){el.innerHTML='<div class="empty">No policies published yet.</div>';return;}
+    el.innerHTML=pols.filter(p=>p.is_active).map(p=>`
+      <div style="border:1px solid rgba(255,255,255,0.07);border-radius:10px;margin-bottom:10px;overflow:hidden;">
+        <div style="background:rgba(0,200,150,0.06);padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="togglePol('pol-${p.id}')">
+          <div style="font-size:0.88rem;font-weight:600;">${p.title}</div>
+          <span style="color:var(--a);font-size:0.75rem;" id="pol-arrow-${p.id}">▼ Read</span>
+        </div>
+        <div id="pol-${p.id}" style="display:none;padding:14px 16px;">
+          <div style="font-size:0.8rem;color:rgba(255,255,255,0.55);line-height:1.85;white-space:pre-wrap;margin-bottom:14px;">${p.content}</div>
+        </div>
+      </div>`).join('');
+  }catch(_){}
+}
+
+function togglePol(id){
+  const el=$(id);
+  const arrow=$(id.replace('pol-','pol-arrow-'));
+  const isOpen=el.style.display==='block';
+  el.style.display=isOpen?'none':'block';
+  if(arrow) arrow.textContent=isOpen?'▼ Read':'▲ Close';
+}
+
+// ── DOCUMENTS
+async function uploadDoc(){
+  const ok=$('doc-ok'),err=$('doc-err');
+  ok.style.display='none';err.style.display='none';
+  const file=$('doc-file').files[0];
+  if(!file){err.textContent='Please select a file.';err.style.display='block';return;}
+  if(file.size>5*1024*1024){err.textContent='File too large. Max 5MB.';err.style.display='block';return;}
+  const fd=new FormData();
+  fd.append('file',file);fd.append('doc_type',$('doc-type').value);
+  fd.append('doc_label',$('doc-label').value.trim()||file.name);
+  try{
+    const r=await fetch('/api/employees/documents/upload',{method:'POST',headers:{'x-auth-token':T},body:fd});
+    const d=await r.json();
+    if(r.ok){ok.textContent='✅ '+d.message;ok.style.display='block';$('doc-file').value='';$('doc-label').value='';loadDocs();}
+    else{err.textContent=d.message||'Upload failed.';err.style.display='block';}
+  }catch(e){err.textContent='Error: '+e.message;err.style.display='block';}
+}
+
+async function loadDocs(){
+  try{
+    const r=await fetch('/api/employees/documents/my',{headers:H});const docs=await r.json();
+    const el=$('doc-list');
+    if(!docs.length){el.innerHTML='<div class="empty">No documents uploaded yet.</div>';return;}
+    el.innerHTML=docs.map(d=>{
+      const ext=(d.file_name||'').split('.').pop().toLowerCase();
+      const isImg=['jpg','jpeg','png','gif','webp'].includes(ext);
+      const isPdf=ext==='pdf';
+      const viewUrl='/uploads/'+d.file_name;
+      return `
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:9px;padding:12px 14px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="flex:1;">
+            <div style="font-size:0.86rem;font-weight:600;">${d.doc_label||d.file_name}</div>
+            <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:2px;">
+              <span style="background:rgba(0,200,150,0.12);color:#00c896;padding:1px 8px;border-radius:10px;font-size:0.63rem;font-weight:600;">${d.doc_type}</span>
+              &nbsp;·&nbsp;${new Date(d.uploaded_at).toLocaleDateString('en-UG',{day:'numeric',month:'short',year:'numeric'})}
+              ${d.file_size?' &nbsp;·&nbsp;'+(Math.round(d.file_size/1024))+'KB':''}
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;margin-left:10px;flex-shrink:0;">
+            <a href="${viewUrl}" target="_blank"
+               style="padding:5px 12px;background:rgba(0,200,150,0.15);border:1px solid rgba(0,200,150,0.3);border-radius:6px;color:#00c896;text-decoration:none;font-size:0.73rem;font-weight:600;white-space:nowrap;">
+              ${isPdf?'📄 PDF':isImg?'🖼️ View':'📁 Open'}
+            </a>
+            <button class="btn bd bsm" onclick="deleteDoc('${d.id}')">🗑️</button>
+          </div>
+        </div>
+        ${isImg?`<img src="${viewUrl}" style="max-width:100%;max-height:140px;margin-top:8px;border-radius:7px;object-fit:contain;border:1px solid rgba(255,255,255,0.07);display:block;" />`:''}
+      </div>`;
+    }).join('');
+  }catch(_){}
+}
+
+async function deleteDoc(id){
+  if(!confirm('Delete this document?')) return;
+  try{
+    const r=await fetch(`/api/employees/documents/${id}`,{method:'DELETE',headers:H});
+    if(r.ok) loadDocs();
+  }catch(_){}
+}
+
+// ── CHANGE PASSWORD
+async function changePwd(){
+  const ok=$('pw-ok'),err=$('pw-err');
+  ok.style.display='none';err.style.display='none';
+  const old=$('pw-old').value,nw=$('pw-new').value,cf=$('pw-cf').value;
+  if(!old||!nw||!cf){err.textContent='All fields are required.';err.style.display='block';return;}
+  if(nw.length<6){err.textContent='New password must be at least 6 characters.';err.style.display='block';return;}
+  if(nw!==cf){err.textContent='Passwords do not match.';err.style.display='block';return;}
+  try{
+    const r=await fetch('/api/auth/change-password',{method:'PUT',headers:H,body:JSON.stringify({old_password:old,new_password:nw})});
+    const d=await r.json();
+    if(r.ok){ok.textContent='✅ '+d.message;ok.style.display='block';$('pw-old').value='';$('pw-new').value='';$('pw-cf').value='';}
+    else{err.textContent=d.message||'Failed.';err.style.display='block';}
+  }catch(e){err.textContent='Error: '+e.message;err.style.display='block';}
+}
+
+// ── SUBSCRIPTION GATE
+async function gCheck(){
+  try{
+    const r=await fetch('/api/subscription/status');
+    if(r.status===402){showSysUnavail();return;}
+    const d=await r.json();
+    if(d.status==='LOCKED'||d.status==='EXPIRED') showSysUnavail(d.message);
+    else if(d.status==='EXPIRING_SOON'){
+      const w=$('sct-warn');w.textContent='⚠️ '+d.message;w.style.display='block';
+    }
+    if(d.primary_color) document.documentElement.style.setProperty('--a',d.primary_color);
+  }catch(_){}
+}
+function showSysUnavail(msg){
+  $('g-icon').textContent='🔒';$('g-hl').textContent='System Unavailable';
+  $('g-msg').textContent=msg||'This system is temporarily unavailable. Please contact your HR Admin for assistance.';
+  $('sct-gate').style.display='flex';
+}
+
+// ── INIT
+loadBrand(); gCheck(); loadHome(); loadProfile();
+</script>
+</body>
+</html>

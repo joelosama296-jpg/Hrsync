@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DocPortal — Admin</title>
+<style>
+:root{--a:#00c896;--a2:#0052ff;--dark:#060d1a;--panel:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.07);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:var(--dark);color:#fff;display:flex;min-height:100vh;}
+.sb{width:245px;background:rgba(0,0,0,0.3);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
+.sb-logo{padding:20px 20px 16px;border-bottom:1px solid var(--border);}
+.sb-logo h1{font-size:1.3rem;font-weight:800;letter-spacing:1px;}
+.sb-logo h1 span{color:var(--a);}
+.sb-logo p{color:rgba(255,255,255,0.28);font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;margin-top:3px;}
+.sb-user{padding:13px 20px;border-bottom:1px solid var(--border);}
+.sb-user .nm{font-size:0.82rem;font-weight:600;}
+.sb-user .rl{font-size:0.6rem;color:var(--a);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.nav{flex:1;padding:10px 0;}
+.ns{padding:11px 20px 3px;font-size:0.58rem;color:rgba(255,255,255,0.2);letter-spacing:3px;text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:9px;padding:10px 20px;color:rgba(255,255,255,0.42);cursor:pointer;transition:all 0.2s;font-size:0.82rem;border-left:3px solid transparent;position:relative;}
+.ni:hover,.ni.active{color:#fff;background:rgba(255,255,255,0.04);border-left-color:var(--a);}
+.bc{background:#ff4444;color:#fff;border-radius:50%;min-width:17px;height:17px;font-size:0.56rem;display:flex;align-items:center;justify-content:center;position:absolute;right:10px;font-weight:700;padding:0 3px;}
+.lo{padding:13px 20px;border-top:1px solid var(--border);}
+.btn-lo{width:100%;padding:8px;background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.2);border-radius:7px;color:#ff6b6b;font-size:0.76rem;cursor:pointer;}
+.main{margin-left:245px;flex:1;padding:26px 30px;}
+.ph{margin-bottom:20px;}.ph h2{font-size:1.3rem;font-weight:700;}.ph p{color:rgba(255,255,255,0.35);font-size:0.76rem;margin-top:3px;}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px;}
+.sc{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:17px;cursor:pointer;transition:all 0.2s;}
+.sc:hover{border-color:rgba(0,200,150,0.3);transform:translateY(-2px);}
+.sc .lbl{font-size:0.66rem;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;}
+.sc .val{font-size:1.65rem;font-weight:700;color:var(--a);margin:5px 0 2px;transition:all 0.3s;}
+.sc .sub{font-size:0.67rem;color:rgba(255,255,255,0.24);}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:13px;}
+.panel h3{font-size:0.88rem;font-weight:600;margin-bottom:13px;color:rgba(255,255,255,0.75);}
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px;}
+.btn{padding:8px 14px;border-radius:7px;border:none;font-size:0.77rem;cursor:pointer;font-weight:600;transition:all 0.2s;}
+.bp{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;}.bp:hover{opacity:0.88;}
+.bs{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);border:1px solid var(--border);}
+.bsu{background:rgba(0,200,150,0.18);color:#00c896;border:1px solid rgba(0,200,150,0.3);}
+.bd{background:rgba(255,50,50,0.14);color:#ff6b6b;border:1px solid rgba(255,50,50,0.25);}
+.bsm{padding:4px 10px;font-size:0.71rem;}
+.fg{margin-bottom:11px;}
+.fg label{display:block;font-size:0.62rem;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.82rem;outline:none;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--a);}
+select option{background:#0a0f1e;}textarea{resize:vertical;min-height:65px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:0.63rem;font-weight:600;letter-spacing:1px;}
+.ba{background:rgba(0,200,150,0.15);color:#00c896;}
+.bp2{background:rgba(255,200,0,0.15);color:#ffc800;}
+.brj{background:rgba(255,50,50,0.15);color:#ff6b6b;}
+.bsp{background:rgba(255,107,53,0.15);color:#ff6b35;}
+.empty{text-align:center;padding:20px;color:rgba(255,255,255,0.2);font-size:0.76rem;}
+.sm{background:rgba(0,200,150,0.08);border:1px solid rgba(0,200,150,0.3);color:#00c896;padding:9px 13px;border-radius:7px;font-size:0.78rem;margin-top:9px;display:none;}
+.em{background:rgba(255,50,50,0.08);border:1px solid rgba(255,50,50,0.3);color:#ff6b6b;padding:9px 13px;border-radius:7px;font-size:0.78rem;margin-top:9px;display:none;}
+.sec{display:none;}.sec.active{display:block;}
+.prog{width:100%;height:5px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--a),var(--a2));border-radius:3px;}
+.chk-list{max-height:180px;overflow-y:auto;background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:8px;padding:8px 12px;}
+.chk-item{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.035);font-size:0.8rem;}
+.chk-item:last-child{border-bottom:none;}
+.chk-item input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--a);}
+.qr-result{background:rgba(0,200,150,0.07);border:1px solid rgba(0,200,150,0.25);border-radius:9px;padding:16px;margin-top:13px;display:none;}
+.qr-result.invalid{background:rgba(255,50,50,0.07);border-color:rgba(255,50,50,0.25);}
+.alert-card{background:rgba(255,200,0,0.05);border:1px solid rgba(255,200,0,0.2);border-radius:9px;padding:12px 15px;margin-bottom:8px;}
+.er{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.er:last-child{border-bottom:none;}
+</style>
+</head>
+<body>
+<div class="sb">
+  <div class="sb-logo"><h1>Doc<span>Portal</span></h1><p>Admin Dashboard</p></div>
+  <div class="sb-user"><div class="nm" id="uNm">Loading...</div><div class="rl">HR Admin</div></div>
+  <nav class="nav">
+    <div class="ns">Overview</div>
+    <div class="ni active" onclick="S('overview',this)"><span>📊</span>Dashboard</div>
+    <div class="ni" onclick="S('employees',this)"><span>👥</span>Employees</div>
+    <div class="ns">Documents</div>
+    <div class="ni" onclick="S('templates',this)"><span>📄</span>Form Templates</div>
+    <div class="ni" onclick="S('assign',this)"><span>📋</span>Assign Documents</div>
+    <div class="ni" onclick="S('submissions',this)"><span>✍️</span>Signed Submissions<span class="bc" id="bSub" style="display:none">0</span></div>
+    <div class="ni" onclick="S('uploads',this)"><span>📁</span>File Uploads<span class="bc" id="bUp" style="display:none">0</span></div>
+    <div class="ns">Communications</div>
+    <div class="ni" onclick="S('policies',this)"><span>📢</span>Policies & Bulk Send</div>
+    <div class="ni" onclick="S('alerts',this)"><span>⚠️</span>Expiry Alerts<span class="bc" id="bAlt" style="display:none">0</span></div>
+    <div class="ns">System</div>
+    <div class="ni" onclick="S('verify',this)"><span>🔍</span>Verify Document</div>
+    <div class="ni" onclick="S('add-emp',this)"><span>➕</span>Add Employee</div>
+    <div class="ni" onclick="S('audit',this)"><span>📜</span>Audit Log</div>
+  </nav>
+  <div class="lo"><button class="btn-lo" onclick="logout()">Sign Out</button></div>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="sec active" id="sec-overview">
+  <div class="ph"><h2>Good day, <span id="gNm">Admin</span> 👋</h2><p id="cDt"></p></div>
+  <div class="sg">
+    <div class="sc"><div class="lbl">Employees</div><div class="val" id="stE">0</div><div class="sub">Registered</div></div>
+    <div class="sc"><div class="lbl">Forms Signed</div><div class="val" id="stS">0</div><div class="sub">Completed submissions</div></div>
+    <div class="sc"><div class="lbl">Overall Completion</div><div class="val" id="stPct">0%</div><div class="sub">Of all assigned forms</div></div>
+    <div class="sc"><div class="lbl">Expiry Alerts</div><div class="val" id="stAlt" style="color:#ffc800;">0</div><div class="sub">Within 30 days</div></div>
+  </div>
+  <div class="panels">
+    <div class="panel">
+      <h3>📊 Employee Completion Status</h3>
+      <div id="compList" class="empty">Loading...</div>
+    </div>
+    <div class="panel">
+      <h3>📥 Recent Activity</h3>
+      <div id="recentAct" class="empty">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- EMPLOYEES -->
+<div class="sec" id="sec-employees">
+  <div class="ph"><h2>👥 Employees</h2><p>All registered employees and their document completion status</p></div>
+  <div class="panel"><div id="empList" class="empty">Loading...</div></div>
+</div>
+
+<!-- TEMPLATES -->
+<div class="sec" id="sec-templates">
+  <div class="ph"><h2>📄 Form Templates</h2><p>Document templates employees fill and e-sign</p></div>
+  <div class="panels">
+    <div class="panel">
+      <h3>Create / Edit Template</h3>
+      <input type="hidden" id="tplId" />
+      <div class="fg"><label>Form Title</label><input id="tTitle" placeholder="e.g. Training Commitment Form" /></div>
+      <div class="fr">
+        <div class="fg"><label>Category</label><select id="tCat"><option value="ONBOARDING">Onboarding</option><option value="COMPLIANCE">Compliance</option><option value="HR">HR</option><option value="GENERAL">General</option></select></div>
+        <div class="fg"><label>Expiry Days (blank = none)</label><input type="number" id="tExp" placeholder="e.g. 365" /></div>
+      </div>
+      <div class="fg"><label>Description</label><textarea id="tDesc" placeholder="Brief description for employees..."></textarea></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:13px;">
+        <input type="checkbox" id="tSig" checked style="width:16px;height:16px;accent-color:var(--a);" />
+        <label style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Requires E-Signature</label>
+      </div>
+      <button class="btn bp" onclick="saveTpl()" style="width:100%">SAVE TEMPLATE</button>
+      <div class="sm" id="tplSM"></div><div class="em" id="tplEM"></div>
+    </div>
+    <div class="panel"><h3>All Templates <span id="tplCount" style="color:rgba(255,255,255,0.35);font-weight:normal;font-size:0.78rem;"></span></h3><div id="tplList" class="empty">Loading...</div></div>
+  </div>
+</div>
+
+<!-- ASSIGN -->
+<div class="sec" id="sec-assign">
+  <div class="ph"><h2>📋 Assign Documents</h2><p>Select employees and documents then click assign</p></div>
+  <div class="panel">
+    <div class="fr">
+      <div class="fg">
+        <label>Select Employees</label>
+        <div style="display:flex;gap:7px;margin-bottom:7px;">
+          <button class="btn bs bsm" onclick="chkAll('.emp-chk',true)">All</button>
+          <button class="btn bs bsm" onclick="chkAll('.emp-chk',false)">None</button>
+        </div>
+        <div class="chk-list" id="empChkList"><div class="empty">Loading...</div></div>
+      </div>
+      <div class="fg">
+        <label>Select Documents</label>
+        <div style="display:flex;gap:7px;margin-bottom:7px;">
+          <button class="btn bs bsm" onclick="chkAll('.tpl-chk',true)">All</button>
+          <button class="btn bs bsm" onclick="chkAll('.tpl-chk',false)">None</button>
+        </div>
+        <div class="chk-list" id="tplChkList"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+    <div class="fg"><label>Due Date (optional)</label><input type="date" id="asnDue" /></div>
+    <button class="btn bp" onclick="doAssign()" style="width:100%">ASSIGN SELECTED DOCUMENTS →</button>
+    <div class="sm" id="asnSM"></div><div class="em" id="asnEM"></div>
+  </div>
+</div>
+
+<!-- SUBMISSIONS -->
+<div class="sec" id="sec-submissions">
+  <div class="ph"><h2>✍️ Signed Submissions</h2></div>
+  <div class="panel">
+    <input style="width:100%;padding:9px 13px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:7px;color:#fff;font-size:0.82rem;outline:none;margin-bottom:13px;" placeholder="🔍 Filter by employee ID or document name..." oninput="filterSubs(this.value)" id="subFilter" />
+    <div id="subList" class="empty">Loading...</div>
+  </div>
+</div>
+
+<!-- UPLOADS -->
+<div class="sec" id="sec-uploads">
+  <div class="ph"><h2>📁 File Uploads</h2><p>Review uploaded ID scans, certificates and documents</p></div>
+  <div class="panel"><div id="uploadList" class="empty">Loading...</div></div>
+</div>
+
+<!-- POLICIES -->
+<div class="sec" id="sec-policies">
+  <div class="ph"><h2>📢 Policies & Bulk Send</h2></div>
+  <div class="panels">
+    <div class="panel">
+      <h3>Create / Edit Policy</h3>
+      <input type="hidden" id="polId" />
+      <div class="fg"><label>Title</label><input id="polTitle" placeholder="e.g. Zero Tolerance Policy" /></div>
+      <div class="fg"><label>Category</label><select id="polCat"><option value="CONDUCT">Conduct</option><option value="IT">IT Policy</option><option value="HR">HR Policy</option><option value="GENERAL">General</option></select></div>
+      <div class="fg"><label>Content</label><textarea id="polContent" style="min-height:120px;" placeholder="Full policy text..."></textarea></div>
+      <button class="btn bp" onclick="savePol()" style="width:100%">SAVE POLICY</button>
+      <div class="sm" id="polSM"></div><div class="em" id="polEM"></div>
+    </div>
+    <div class="panel">
+      <h3>📢 Bulk Send Policy</h3>
+      <div class="fg" style="position:relative;z-index:10;">
+        <label>Select Policy</label>
+        <select id="sendPolSel" onchange="this.blur()" style="position:relative;z-index:10;">
+          <option value="">-- Select a policy --</option>
+        </select>
+      </div>
+      <div class="sm" id="sendSM"></div><div class="em" id="sendEM"></div>
+      <button class="btn bp" onclick="sendPolAll()" style="width:100%;margin-bottom:12px;margin-top:4px;">📢 SEND TO ALL EMPLOYEES</button>
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:8px;">— or select specific employees below —</div>
+      <div class="chk-list" id="polEmpChkList"><div class="empty">Loading employees...</div></div>
+      <button class="btn bs" onclick="sendPolSelected()" style="width:100%;margin-top:8px;">Send to Selected</button>
+    </div>
+  </div>
+  <div class="panel"><h3>All Policies</h3><div id="polList" class="empty">No policies yet.</div></div>
+</div>
+
+<!-- ALERTS -->
+<div class="sec" id="sec-alerts">
+  <div class="ph"><h2>⚠️ Expiry Alerts</h2><p>Documents expiring within the next 30 days</p></div>
+  <div class="panel"><div id="alertList" class="empty">Checking for expiring documents...</div></div>
+</div>
+
+<!-- VERIFY -->
+<div class="sec" id="sec-verify">
+  <div class="ph"><h2>🔍 Verify Document</h2><p>Enter a VRF code to verify a document's authenticity</p></div>
+  <div class="panel" style="max-width:520px;">
+    <div class="fg"><label>Verification Code (VRF)</label><input id="verifCode" placeholder="e.g. VRF-ABC123DEF" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;" /></div>
+    <button class="btn bp" onclick="verifyDoc()" style="width:100%">VERIFY DOCUMENT</button>
+    <div class="qr-result" id="qrResult"></div>
+  </div>
+</div>
+
+<!-- ADD EMPLOYEE -->
+<div class="sec" id="sec-add-emp">
+  <div class="ph"><h2>➕ Add Employee</h2><p>Create login credentials for a new employee</p></div>
+  <div class="panel" style="max-width:540px;">
+    <div class="fr">
+      <div class="fg"><label>Employee ID</label><input id="newEid" placeholder="e.g. EMP-002" style="text-transform:uppercase;" /></div>
+      <div class="fg"><label>Full Name</label><input id="newName" placeholder="e.g. Sarah Nakato" /></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Department</label><input id="newDept" placeholder="e.g. Operations" /></div>
+      <div class="fg"><label>Job Title</label><input id="newTitle" placeholder="e.g. Customer Care Executive" /></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Email (optional)</label><input type="email" id="newEmail" placeholder="email@company.com" /></div>
+      <div class="fg"><label>Temporary Password</label><input type="password" id="newPwd" placeholder="Set a password" /></div>
+    </div>
+    <button class="btn bp" onclick="addEmp()" style="width:100%">CREATE EMPLOYEE ACCOUNT</button>
+    <div class="sm" id="empSM"></div><div class="em" id="empEM"></div>
+  </div>
+</div>
+
+<!-- AUDIT -->
+<div class="sec" id="sec-audit">
+  <div class="ph"><h2>📜 Audit Log</h2><p>Immutable record of all system activity</p></div>
+  <div class="panel"><div id="auditList" class="empty">Loading...</div></div>
+</div>
+
+</div>
+<script>
+const T=localStorage.getItem('dp_token'),NM=localStorage.getItem('dp_name');
+if(!T)window.location.href='/';
+document.getElementById('uNm').textContent=NM||'Admin';
+document.getElementById('gNm').textContent=NM?NM.split(' ')[0]:'Admin';
+document.getElementById('cDt').textContent=new Date().toLocaleDateString('en-UG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+const H={'x-auth-token':T,'Content-Type':'application/json'};
+let allEmps=[],allTpls=[],allSubs=[],allPols=[];
+
+function S(n,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+n).classList.add('active');
+  document.querySelectorAll('.ni').forEach(i=>i.classList.remove('active'));
+  if(el)el.classList.add('active');
+  if(n==='overview')loadDash();
+  if(n==='employees')loadEmps();
+  if(n==='templates')loadTpls();
+  if(n==='assign'){loadEmpChk();loadTplChk();}
+  if(n==='submissions')loadSubs();
+  if(n==='uploads')loadUploads();
+  if(n==='policies'){loadPols();loadPolSel();loadPolEmpChk();}
+  if(n==='alerts')loadAlerts();
+  if(n==='audit')loadAudit();
+}
+function logout(){localStorage.clear();window.location.href='/';}
+async function api(url,opts={}){return fetch('/api'+url,{...opts,headers:{...H,...(opts.headers||{})}});}
+function msg(id,text,ok){const el=document.getElementById(id);el.textContent=text;el.style.display='block';setTimeout(()=>el.style.display='none',4000);}
+
+async function loadDash(){
+  try{
+    const r=await api('/stats');const d=await r.json();
+    document.getElementById('stE').textContent=d.employees||0;
+    document.getElementById('stS').textContent=d.submissions||0;
+    document.getElementById('stPct').textContent=(d.completion_pct||0)+'%';
+    document.getElementById('stAlt').textContent=d.expiry_alerts||0;
+    setBadge('bAlt',d.expiry_alerts);setBadge('bUp',d.pending_uploads);
+    const cl=document.getElementById('compList');
+    if(!d.emp_completion?.length){cl.innerHTML='<div class="empty">No employees yet.</div>';}
+    else cl.innerHTML=d.emp_completion.map(e=>`<div style="padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <div><div style="font-size:0.82rem;font-weight:600;">${e.full_name}</div><div style="font-size:0.67rem;color:rgba(255,255,255,0.3);">${e.employee_id}${e.department?' | '+e.department:''}</div></div>
+        <span style="font-size:0.84rem;font-weight:700;color:${e.pct===100?'#00c896':e.pct>=50?'#ffc800':'#ff6b6b'};">${e.pct}%</span>
+      </div>
+      <div class="prog"><div class="prog-fill" style="width:${e.pct}%"></div></div>
+      <div style="font-size:0.66rem;color:rgba(255,255,255,0.25);margin-top:3px;">${e.done} of ${e.asgn} forms signed</div>
+    </div>`).join('');
+    const ar=await api('/audit');const ad=await ar.json();
+    const ra=document.getElementById('recentAct');
+    if(!ad.length)ra.innerHTML='<div class="empty">No activity yet.</div>';
+    else ra.innerHTML=ad.slice(0,12).map(a=>`<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.75rem;">
+      <span style="color:var(--a);font-weight:600;">${a.actor}</span> — ${a.action}
+      <div style="color:rgba(255,255,255,0.28);font-size:0.67rem;">${new Date(a.created_at).toLocaleString()}${a.details?' | '+a.details:''}</div>
+    </div>`).join('');
+  }catch(e){console.error(e);}
+}
+function setBadge(id,v){const el=document.getElementById(id);if(v&&v>0){el.textContent=v;el.style.display='flex';}else el.style.display='none';}
+
+async function loadEmps(){
+  const r=await api('/employees');allEmps=await r.json();
+  const el=document.getElementById('empList');
+  if(!allEmps.length){el.innerHTML='<div class="empty">No employees yet. Use "Add Employee" to add staff.</div>';return;}
+  el.innerHTML=allEmps.map(e=>`<div class="er">
+    <div><div style="font-size:0.84rem;font-weight:600;">${e.full_name}</div>
+    <div style="font-size:0.69rem;color:rgba(255,255,255,0.3);margin-top:2px;">${e.employee_id} | ${e.job_title||'N/A'} | ${e.department||'N/A'}</div>
+    <div style="margin-top:5px;display:flex;align-items:center;gap:8px;">
+      <div class="prog" style="width:100px;height:4px;"><div class="prog-fill" style="width:${e.completion_pct||0}%"></div></div>
+      <span style="font-size:0.67rem;color:rgba(255,255,255,0.35);">${e.completion_pct||0}% (${e.completed||0}/${e.assigned||0} forms) | ${e.uploads||0} files</span>
+    </div></div>
+    <span class="badge ${e.status==='ACTIVE'?'ba':'brj'}">${e.status}</span>
+  </div>`).join('');
+}
+
+async function loadTpls(){
+  const r=await api('/templates');allTpls=await r.json();
+  document.getElementById('tplCount').textContent=`(${allTpls.length})`;
+  const el=document.getElementById('tplList');
+  if(!allTpls.length){el.innerHTML='<div class="empty">No templates yet.</div>';return;}
+  el.innerHTML=allTpls.map(t=>`<div style="padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div style="font-size:0.84rem;font-weight:600;">${t.title}</div>
+        <div style="font-size:0.68rem;color:rgba(255,255,255,0.3);margin-top:2px;">
+          <span class="badge bp2">${t.category}</span>
+          ${t.requires_signature?'<span style="margin-left:5px;color:#00c896;">✍️ Signature</span>':''}
+          ${t.expiry_days?`<span style="margin-left:5px;color:#ffc800;">⏳ ${t.expiry_days}d expiry</span>`:''}
+        </div>
+      </div>
+      <div style="display:flex;gap:5px;">
+        <button class="btn bs bsm" onclick="editTpl('${t.id}')">✏️</button>
+        <button class="btn bd bsm" onclick="delTpl('${t.id}')">🗑️</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+function editTpl(id){const t=allTpls.find(x=>x.id===id);if(!t)return;
+  document.getElementById('tplId').value=t.id;document.getElementById('tTitle').value=t.title;
+  document.getElementById('tCat').value=t.category;document.getElementById('tDesc').value=t.description||'';
+  document.getElementById('tExp').value=t.expiry_days||'';document.getElementById('tSig').checked=t.requires_signature;
+  window.scrollTo(0,0);
+}
+async function saveTpl(){
+  const id=document.getElementById('tplId').value;
+  const payload={title:document.getElementById('tTitle').value.trim(),category:document.getElementById('tCat').value,description:document.getElementById('tDesc').value.trim(),expiry_days:parseInt(document.getElementById('tExp').value)||null,requires_signature:document.getElementById('tSig').checked};
+  if(!payload.title){document.getElementById('tplEM').textContent='Title is required.';document.getElementById('tplEM').style.display='block';return;}
+  if(id)payload.id=id;
+  const r=await api('/templates',{method:'POST',body:JSON.stringify(payload)});const d=await r.json();
+  if(r.ok){msg('tplSM','✅ '+d.message,true);loadTpls();document.getElementById('tplId').value='';}
+  else{document.getElementById('tplEM').textContent=d.message;document.getElementById('tplEM').style.display='block';}
+}
+async function delTpl(id){if(!confirm('Delete this template?'))return;await api('/templates/'+id,{method:'DELETE'});loadTpls();}
+
+function loadEmpChk(){
+  if(!allEmps.length)api('/employees').then(r=>r.json()).then(d=>{allEmps=d;renderEmpChk();});else renderEmpChk();
+}
+function renderEmpChk(){
+  document.getElementById('empChkList').innerHTML=allEmps.length
+    ?allEmps.map(e=>`<div class="chk-item"><input type="checkbox" class="emp-chk" value="${e.employee_id}"/><span>${e.full_name} <span style="color:rgba(255,255,255,0.3)">(${e.employee_id})</span></span></div>`).join('')
+    :'<div class="empty">No employees.</div>';
+}
+function loadTplChk(){
+  if(!allTpls.length)api('/templates').then(r=>r.json()).then(d=>{allTpls=d;renderTplChk();});else renderTplChk();
+}
+function renderTplChk(){
+  document.getElementById('tplChkList').innerHTML=allTpls.length
+    ?allTpls.map(t=>`<div class="chk-item"><input type="checkbox" class="tpl-chk" value="${t.id}"/><span>${t.title}</span></div>`).join('')
+    :'<div class="empty">No templates.</div>';
+}
+function chkAll(sel,v){document.querySelectorAll(sel).forEach(c=>c.checked=v);}
+async function doAssign(){
+  const eids=[...document.querySelectorAll('.emp-chk:checked')].map(c=>c.value);
+  const tids=[...document.querySelectorAll('.tpl-chk:checked')].map(c=>c.value);
+  const due=document.getElementById('asnDue').value;
+  if(!eids.length||!tids.length){document.getElementById('asnEM').textContent='Select at least one employee and one document.';document.getElementById('asnEM').style.display='block';return;}
+  document.getElementById('asnEM').style.display='none';
+  const r=await api('/assign',{method:'POST',body:JSON.stringify({employee_ids:eids,template_ids:tids,due_date:due||null})});
+  const d=await r.json();
+  if(r.ok){document.getElementById('asnSM').textContent='✅ '+d.message;document.getElementById('asnSM').style.display='block';}
+  else{document.getElementById('asnEM').textContent=d.message;document.getElementById('asnEM').style.display='block';}
+}
+
+async function loadSubs(){
+  const r=await api('/submissions');allSubs=await r.json();renderSubs(allSubs);
+}
+function filterSubs(q){renderSubs(allSubs.filter(s=>s.employee_id.toLowerCase().includes(q.toLowerCase())||s.template_title.toLowerCase().includes(q.toLowerCase())));}
+function renderSubs(subs){
+  const el=document.getElementById('subList');
+  if(!subs.length){el.innerHTML='<div class="empty">No signed submissions yet.</div>';return;}
+  el.innerHTML=subs.slice().reverse().map(s=>`<div style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div style="font-size:0.85rem;font-weight:600;">${s.template_title}</div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);margin-top:2px;">
+          Employee: <strong style="color:rgba(255,255,255,0.7);">${s.employee_id}</strong> |
+          Signed by: <strong style="color:#00c896;">${s.signature?.typed||'N/A'}</strong> |
+          ${new Date(s.submitted_at).toLocaleDateString()}
+        </div>
+        <div style="font-size:0.68rem;color:rgba(0,200,150,0.6);margin-top:3px;font-family:monospace;">🔐 ${s.verif_code}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="badge ba">SIGNED</span>
+        ${s.qr_data?`<img src="${s.qr_data}" style="width:38px;height:38px;border-radius:4px;border:1px solid rgba(255,255,255,0.1);" title="QR Code — ${s.verif_code}" />`:''}
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+async function loadUploads(){
+  const r=await api('/uploads');const ups=await r.json();
+  const el=document.getElementById('uploadList');
+  if(!ups.length){el.innerHTML='<div class="empty">No uploads yet.</div>';return;}
+  el.innerHTML=ups.slice().reverse().map(u=>{
+    const ext=(u.file_name||'').split('.').pop().toLowerCase();
+    const isImg=['jpg','jpeg','png','gif','webp'].includes(ext);
+    const isPdf=ext==='pdf';
+    const viewUrl='/uploads/'+u.file_name;
+    const viewLabel=isPdf?'📄 Open PDF':isImg?'🖼️ View':'📁 Download';
+    return `<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:9px;padding:12px 14px;margin-bottom:8px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+      <div style="flex:1;">
+        <div style="font-size:0.86rem;font-weight:600;">${u.doc_label||u.file_name}</div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:3px;">${u.employee_id} | ${u.doc_type} | ${new Date(u.uploaded_at).toLocaleDateString()}${u.expiry_date?' | Exp: <strong style="color:#ffc800;">'+u.expiry_date+'</strong>':''}</div>
+        ${isImg?`<img src="${viewUrl}" style="max-width:100%;max-height:140px;margin-top:8px;border-radius:7px;object-fit:contain;border:1px solid rgba(255,255,255,0.07);display:block;" />`:''}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end;flex-shrink:0;">
+        <span class="badge ${u.status==='APPROVED'?'ba':u.status==='REJECTED'?'brj':'bp2'}">${u.status==='PENDING_REVIEW'?'PENDING':u.status}</span>
+        <a href="${viewUrl}" target="_blank" style="padding:5px 12px;background:rgba(0,200,150,0.15);border:1px solid rgba(0,200,150,0.3);border-radius:6px;color:#00c896;text-decoration:none;font-size:0.73rem;font-weight:600;white-space:nowrap;">${viewLabel}</a>
+        ${u.status==='PENDING_REVIEW'?`<button class="btn bsu bsm" onclick="rvUp('${u.id}','APPROVED')">✅ Approve</button><button class="btn bd bsm" onclick="rvUp('${u.id}','REJECTED')">❌ Reject</button>`:''}
+      </div>
+    </div>
+  </div>`;}).join('');
+}
+async function rvUp(id,status){await api('/uploads/'+id+'/review',{method:'PUT',body:JSON.stringify({status})});loadUploads();}
+
+async function loadPols(){
+  const r=await api('/policies');allPols=await r.json();
+  const el=document.getElementById('polList');
+  if(!allPols.length){el.innerHTML='<div class="empty">No policies yet.</div>';return;}
+  el.innerHTML=allPols.map(p=>`<div style="padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div><div style="font-size:0.84rem;font-weight:600;">${p.title}</div><div style="font-size:0.69rem;color:rgba(255,255,255,0.3);">${p.category}</div></div>
+      <button class="btn bs bsm" onclick="editPol('${p.id}')">✏️ Edit</button>
+    </div>
+  </div>`).join('');
+}
+function editPol(id){const p=allPols.find(x=>x.id===id);if(!p)return;
+  document.getElementById('polId').value=p.id;document.getElementById('polTitle').value=p.title;
+  document.getElementById('polCat').value=p.category;document.getElementById('polContent').value=p.content||'';
+  window.scrollTo(0,0);
+}
+async function savePol(){
+  const id=document.getElementById('polId').value,title=document.getElementById('polTitle').value.trim(),content=document.getElementById('polContent').value.trim(),category=document.getElementById('polCat').value;
+  if(!title||!content){document.getElementById('polEM').textContent='Title and content required.';document.getElementById('polEM').style.display='block';return;}
+  document.getElementById('polEM').style.display='none';
+  const r=await api('/policies',{method:'POST',body:JSON.stringify({id:id||undefined,title,content,category})});
+  const d=await r.json();
+  if(r.ok){document.getElementById('polSM').textContent='✅ '+d.message;document.getElementById('polSM').style.display='block';document.getElementById('polId').value='';loadPols();loadPolSel();}
+  else{document.getElementById('polEM').textContent=d.message;document.getElementById('polEM').style.display='block';}
+}
+function loadPolSel(){const sel=document.getElementById('sendPolSel');sel.innerHTML='<option value="">-- Select a policy --</option>';allPols.forEach(p=>sel.innerHTML+=`<option value="${p.id}">${p.title}</option>`);}
+function loadPolEmpChk(){
+  if(!allEmps.length)api('/employees').then(r=>r.json()).then(d=>{allEmps=d;renderPolEmpChk();});else renderPolEmpChk();
+}
+function renderPolEmpChk(){
+  document.getElementById('polEmpChkList').innerHTML=allEmps.length
+    ?allEmps.map(e=>`<div class="chk-item"><input type="checkbox" class="pol-emp-chk" value="${e.employee_id}"/><span>${e.full_name} <span style="color:rgba(255,255,255,0.3)">(${e.employee_id})</span></span></div>`).join('')
+    :'<div class="empty">No employees.</div>';
+}
+async function sendPolAll(){
+  const pid=document.getElementById('sendPolSel').value;
+  if(!pid){document.getElementById('sendEM').textContent='Select a policy first.';document.getElementById('sendEM').style.display='block';return;}
+  document.getElementById('sendEM').style.display='none';
+  const r=await api('/policies/send',{method:'POST',body:JSON.stringify({policy_id:pid,send_to_all:true})});
+  const d=await r.json();
+  if(r.ok){document.getElementById('sendSM').textContent='✅ '+d.message;document.getElementById('sendSM').style.display='block';}
+}
+async function sendPolSelected(){
+  const pid=document.getElementById('sendPolSel').value;
+  const eids=[...document.querySelectorAll('.pol-emp-chk:checked')].map(c=>c.value);
+  if(!pid||!eids.length){document.getElementById('sendEM').textContent='Select a policy and at least one employee.';document.getElementById('sendEM').style.display='block';return;}
+  document.getElementById('sendEM').style.display='none';
+  const r=await api('/policies/send',{method:'POST',body:JSON.stringify({policy_id:pid,employee_ids:eids})});
+  const d=await r.json();
+  if(r.ok){document.getElementById('sendSM').textContent='✅ '+d.message;document.getElementById('sendSM').style.display='block';}
+}
+
+async function loadAlerts(){
+  const r=await api('/alerts/expiry');const alerts=await r.json();
+  const el=document.getElementById('alertList');
+  if(!alerts.length){el.innerHTML='<div class="empty">✅ No documents expiring in the next 30 days.</div>';return;}
+  el.innerHTML=alerts.map(a=>`<div class="alert-card">
+    <div style="font-size:0.82rem;font-weight:600;color:#ffc800;">${a.type==='FORM'?'📋 Form':'📄 Document'}: ${a.title}</div>
+    <div style="font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:3px;">Employee: ${a.employee_id} | Expires: ${new Date(a.expires_at).toLocaleDateString()} | <strong style="color:${a.days_left<=7?'#ff6b6b':'#ffc800'};">${a.days_left} day(s) left</strong></div>
+  </div>`).join('');
+}
+
+async function verifyDoc(){
+  const code=document.getElementById('verifCode').value.trim().toUpperCase();
+  const res=document.getElementById('qrResult');res.style.display='none';
+  if(!code)return;
+  const r=await fetch('/api/verify/'+code);const d=await r.json();
+  res.style.display='block';
+  if(d.valid){
+    res.className='qr-result';
+    res.innerHTML=`<div style="color:#00c896;font-weight:700;font-size:0.9rem;margin-bottom:10px;">✅ DOCUMENT VERIFIED — AUTHENTIC</div>
+    <div style="font-size:0.8rem;color:rgba(255,255,255,0.65);line-height:2;">
+      Document: <strong style="color:#fff;">${d.document}</strong><br>
+      Signed By: <strong style="color:#00c896;">${d.signed_name||d.signed_by}</strong><br>
+      Employee ID: ${d.signed_by}<br>
+      Signed At: ${new Date(d.signed_at).toLocaleString()}<br>
+      Category: ${d.category}<br>
+      ${d.expires_at?'Expires: <strong>'+new Date(d.expires_at).toLocaleDateString()+'</strong>':'No expiry date'}
+    </div>`;
+  }else{
+    res.className='qr-result invalid';
+    res.innerHTML=`<div style="color:#ff6b6b;font-weight:700;">❌ VERIFICATION FAILED</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:6px;">${d.message}</div>`;
+  }
+}
+
+async function addEmp(){
+  const payload={employee_id:document.getElementById('newEid').value.trim().toUpperCase(),full_name:document.getElementById('newName').value.trim(),department:document.getElementById('newDept').value.trim(),job_title:document.getElementById('newTitle').value.trim(),email:document.getElementById('newEmail').value.trim(),password:document.getElementById('newPwd').value};
+  document.getElementById('empEM').style.display='none';
+  if(!payload.employee_id||!payload.full_name||!payload.password){document.getElementById('empEM').textContent='Employee ID, full name and password are required.';document.getElementById('empEM').style.display='block';return;}
+  const r=await api('/auth/create-user',{method:'POST',body:JSON.stringify(payload)});const d=await r.json();
+  if(r.ok){document.getElementById('empSM').textContent=`✅ ${d.user.full_name} created. ID: ${d.user.employee_id}`;document.getElementById('empSM').style.display='block';['newEid','newName','newDept','newTitle','newEmail','newPwd'].forEach(id=>document.getElementById(id).value='');}
+  else{document.getElementById('empEM').textContent=d.message;document.getElementById('empEM').style.display='block';}
+}
+
+async function loadAudit(){
+  const r=await api('/audit');const logs=await r.json();const el=document.getElementById('auditList');
+  if(!logs.length){el.innerHTML='<div class="empty">No logs yet.</div>';return;}
+  el.innerHTML=logs.map(l=>`<div style="padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:0.74rem;">
+    <span style="color:var(--a);font-weight:600;">${l.actor}</span> — ${l.action}
+    <span style="color:rgba(255,255,255,0.25);margin-left:8px;">${new Date(l.created_at).toLocaleString()}</span>
+    ${l.details?`<div style="color:rgba(255,255,255,0.25);margin-top:1px;font-size:0.68rem;">${l.details}</div>`:''}
+  </div>`).join('');
+}
+
+loadDash();setInterval(loadDash,15000);
+</script>
+</body>
+</html>

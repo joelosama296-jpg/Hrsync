@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HRSync — Login</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Segoe UI',sans-serif;
+  background:#08091a;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background-image:
+    radial-gradient(ellipse at 20% 50%,rgba(0,100,255,0.10) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 20%,rgba(0,200,150,0.08) 0%,transparent 55%);
+}
+
+/* ── GATE ── */
+#sct-gate{
+  display:none;position:fixed;inset:0;z-index:99999;
+  background:rgba(6,9,20,0.97);
+  align-items:center;justify-content:center;
+}
+.gbox{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;padding:44px 38px;
+  max-width:450px;width:90%;text-align:center;
+  box-shadow:0 30px 70px rgba(0,0,0,0.6);
+}
+.gicon{font-size:2.8rem;margin-bottom:14px;}
+.gprod{font-size:0.66rem;color:rgba(255,255,255,0.3);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;}
+.ghl{color:#fff;font-size:1.25rem;font-weight:700;margin-bottom:10px;}
+.gmsg{color:rgba(255,255,255,0.44);font-size:0.83rem;line-height:1.75;margin-bottom:22px;}
+.glbl{display:block;font-size:0.62rem;color:rgba(255,255,255,0.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;text-align:left;}
+.ginp{
+  width:100%;padding:12px 15px;margin-bottom:11px;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
+  border-radius:10px;color:#fff;font-size:0.9rem;outline:none;
+  font-family:monospace;letter-spacing:1px;text-transform:uppercase;box-sizing:border-box;
+}
+.ginp:focus{border-color:#00c896;}
+.ginp-plain{text-transform:none;font-family:'Segoe UI',sans-serif;letter-spacing:0;}
+.gbtn{
+  width:100%;padding:13px;margin-bottom:12px;
+  background:linear-gradient(135deg,#00c896,#0052ff);
+  border:none;border-radius:10px;color:#fff;
+  font-size:0.92rem;font-weight:700;cursor:pointer;letter-spacing:1px;
+  transition:opacity 0.2s;
+}
+.gbtn:hover{opacity:0.88;}
+.gbtn:disabled{opacity:0.45;cursor:not-allowed;}
+.gerr{display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;padding:10px 14px;border-radius:8px;font-size:0.79rem;margin-bottom:11px;text-align:left;}
+.gok{display:none;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#86efac;padding:10px 14px;border-radius:8px;font-size:0.79rem;margin-bottom:11px;text-align:left;}
+.gfoot{font-size:0.7rem;color:rgba(255,255,255,0.2);line-height:1.8;}
+
+/* ── EXPIRY BANNER ── */
+#sct-banner{
+  display:none;width:100%;
+  background:rgba(245,158,11,0.1);
+  border-bottom:1px solid rgba(245,158,11,0.28);
+  color:#fcd34d;padding:10px 20px;font-size:0.79rem;
+  text-align:center;position:fixed;top:0;left:0;right:0;z-index:900;
+}
+#sct-banner button{
+  margin-left:10px;padding:3px 10px;
+  background:rgba(245,158,11,0.2);
+  border:1px solid rgba(245,158,11,0.4);
+  border-radius:5px;color:#fcd34d;font-size:0.73rem;cursor:pointer;
+}
+
+/* ── LOGIN CARD ── */
+.wrap{width:100%;max-width:400px;margin-top:20px;}
+.logo{text-align:center;margin-bottom:30px;}
+.logo-name{font-size:2.3rem;font-weight:800;color:#fff;letter-spacing:1px;}
+.logo-name span{color:#00c896;}
+.logo-sub{color:rgba(255,255,255,0.28);font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;margin-top:5px;}
+.logo-pill{
+  display:inline-block;margin-top:11px;
+  background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.25);
+  color:#00c896;font-size:0.65rem;letter-spacing:2px;
+  padding:4px 14px;border-radius:20px;text-transform:uppercase;
+}
+.card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;padding:34px 30px;
+  box-shadow:0 24px 56px rgba(0,0,0,0.5);
+}
+.fg{margin-bottom:15px;}
+.fg label{
+  display:block;color:rgba(255,255,255,0.35);
+  font-size:0.64rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;
+}
+.fg input{
+  width:100%;padding:12px 15px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:10px;color:#fff;font-size:0.92rem;outline:none;
+  transition:border-color 0.25s,background 0.25s;
+}
+.fg input:focus{border-color:#00c896;background:rgba(0,200,150,0.05);}
+.fg input::placeholder{color:rgba(255,255,255,0.18);}
+.lbtn{
+  width:100%;padding:13px;margin-top:4px;
+  background:linear-gradient(135deg,#00c896,#0052ff);
+  border:none;border-radius:10px;color:#fff;
+  font-size:0.94rem;font-weight:700;cursor:pointer;letter-spacing:1px;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.lbtn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,200,150,0.28);}
+.lbtn:active{transform:none;}
+.lbtn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.lerr{
+  background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.28);
+  color:#ff8080;padding:11px 14px;border-radius:9px;
+  font-size:0.81rem;margin-top:12px;display:none;
+}
+.div{
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,0.09),transparent);
+  margin:22px 0;
+}
+.links{display:flex;flex-direction:column;gap:9px;text-align:center;}
+.links a{color:rgba(255,255,255,0.38);font-size:0.77rem;text-decoration:none;transition:color 0.2s;}
+.links a:hover{color:#00c896;}
+.foot{text-align:center;margin-top:20px;color:rgba(255,255,255,0.14);font-size:0.66rem;}
+</style>
+</head>
+<body>
+
+<!-- ══ SUBSCRIPTION GATE OVERLAY ══════════════════════════════════════ -->
+<div id="sct-gate">
+  <div class="gbox">
+    <div class="gicon" id="g-icon">🔒</div>
+    <div class="gprod">HRSync — Sovereign Civic Tech</div>
+    <div class="ghl" id="g-hl">Subscription Required</div>
+    <div class="gmsg" id="g-msg">Enter your activation token from Sovereign Civic Tech to continue.</div>
+
+    <label class="glbl">Activation Token</label>
+    <input class="ginp" id="g-tok" placeholder="SCT-XXX-HRS-XXXXXXXX" />
+
+    <div id="g-exp-wrap" style="display:none;">
+      <label class="glbl">Expiry Date <span style="font-size:0.58rem;color:rgba(255,255,255,0.25);">(from your info card)</span></label>
+      <input type="date" class="ginp ginp-plain" id="g-exp" />
+    </div>
+
+    <div id="g-co-wrap" style="display:none;">
+      <label class="glbl">Company Name</label>
+      <input class="ginp ginp-plain" id="g-co" placeholder="e.g. iSON BPO Uganda" />
+    </div>
+
+    <div class="gerr" id="g-err"></div>
+    <div class="gok"  id="g-ok"></div>
+
+    <button class="gbtn" id="g-btn" onclick="gActivate()">ACTIVATE SUBSCRIPTION</button>
+    <div class="gfoot">
+      Don't have a token? Contact us to get started.<br>
+      <strong style="color:rgba(255,255,255,0.4);">Sovereign Civic Tech — Uganda 🇺🇬</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXPIRY WARNING BANNER ═══════════════════════════════════════════ -->
+<div id="sct-banner">
+  ⚠️ <span id="ban-txt"></span>
+  <button onclick="gShow('renew')">Enter New Token</button>
+  <button onclick="document.getElementById('sct-banner').style.display='none'"
+          style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1rem;cursor:pointer;position:absolute;right:16px;top:50%;transform:translateY(-50%);">✕</button>
+</div>
+
+<!-- ══ LOGIN CARD ═══════════════════════════════════════════════════════ -->
+<div class="wrap">
+  <div class="logo">
+    <div class="logo-name" id="co-name">HR<span>Sync</span></div>
+    <div class="logo-sub"  id="co-tag">HR Automation Platform</div>
+    <span class="logo-pill">Sovereign Civic Tech 🇺🇬</span>
+  </div>
+
+  <div class="card">
+    <div class="fg">
+      <label>Work ID</label>
+      <input type="text" id="wid" placeholder="e.g. HR-001 or EMP-001"
+             style="text-transform:uppercase;" autocomplete="username" />
+    </div>
+    <div class="fg">
+      <label>Password</label>
+      <input type="password" id="pwd" placeholder="Enter your password"
+             autocomplete="current-password" />
+    </div>
+    <button class="lbtn" id="lbtn" onclick="doLogin()">SIGN IN</button>
+    <div class="lerr" id="lerr"></div>
+
+    <div class="div"></div>
+    <div class="links">
+      <a href="/recruit-portal.html">→ New recruit? Apply with your invitation key</a>
+      <a href="/floor-register.html">→ Already have a Work ID? Set up your account</a>
+    </div>
+  </div>
+
+  <div class="foot">Sovereign Civic Tech — Uganda 🇺🇬 &nbsp;|&nbsp; HRSync v1.0</div>
+</div>
+
+<script>
+// ── helpers
+const $  = id => document.getElementById(id);
+const H  = {'Content-Type':'application/json'};
+
+// ── redirect if already logged in
+(function(){
+  const t=localStorage.getItem('token'),r=localStorage.getItem('role');
+  if(t) location.href=(r==='HR_ADMIN'||r==='SUPER_ADMIN')?'/hr-dashboard.html':'/employee-portal.html';
+})();
+
+// ── apply branding from settings
+async function loadBrand(){
+  try{
+    const r=await fetch('/api/employees/settings');
+    if(!r.ok)return;
+    const s=await r.json();
+    if(s.company_name){
+      $('co-name').textContent=s.company_name;
+      document.title=s.company_name+' — Login';
+    }
+    if(s.tagline) $('co-tag').textContent=s.tagline;
+    if(s.primary_color) document.documentElement.style.setProperty('--a',s.primary_color);
+  }catch(_){}
+}
+
+// ── login
+async function doLogin(){
+  const wid=$('wid').value.trim().toUpperCase();
+  const pwd=$('pwd').value;
+  const err=$('lerr'),btn=$('lbtn');
+  err.style.display='none';
+  if(!wid||!pwd){err.textContent='Please enter your Work ID and password.';err.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Signing in...';
+  try{
+    const r=await fetch('/api/auth/login',{method:'POST',headers:H,body:JSON.stringify({work_id:wid,password:pwd})});
+    const d=await r.json();
+    if(r.ok){
+      localStorage.setItem('token',d.token);
+      localStorage.setItem('role',d.role);
+      localStorage.setItem('name',d.name);
+      localStorage.setItem('work_id',d.work_id);
+      location.href=(d.role==='HR_ADMIN'||d.role==='SUPER_ADMIN')?'/hr-dashboard.html':'/employee-portal.html';
+    }else{
+      if(r.status===402){gShow('locked',d.message);btn.disabled=false;btn.textContent='SIGN IN';return;}
+      err.textContent=d.message||'Login failed. Check your credentials.';
+      err.style.display='block';
+      btn.disabled=false;btn.textContent='SIGN IN';
+    }
+  }catch(e){
+    err.textContent='Cannot reach the server. Make sure it is running.';
+    err.style.display='block';
+    btn.disabled=false;btn.textContent='SIGN IN';
+  }
+}
+$('pwd').addEventListener('keypress',e=>{if(e.key==='Enter')doLogin();});
+$('wid').addEventListener('keypress',e=>{if(e.key==='Enter')$('pwd').focus();});
+
+// ══ SUBSCRIPTION GATE ════════════════════════════════════════════════
+async function gCheck(){
+  try{
+    const r=await fetch('/api/subscription/status');
+    if(r.status===402){gShow('locked');return;}
+    const d=await r.json();
+    if     (d.status==='LOCKED')        gShow('locked',  d.message);
+    else if(d.status==='EXPIRED')       gShow('expired', d.message);
+    else if(d.status==='NO_TOKEN')      gShow('setup',   d.message);
+    else if(d.status==='EXPIRING_SOON'){
+      $('ban-txt').textContent=d.message;
+      $('sct-banner').style.display='block';
+    }
+    if(d.primary_color) document.documentElement.style.setProperty('--a',d.primary_color);
+  }catch(_){}
+}
+
+function gShow(reason, customMsg){
+  const configs={
+    locked:{
+      icon:'🔑', hl:'Subscription Token Required', hlColor:'#fbbf24',
+      msg: customMsg||'Your subscription needs to be renewed. Enter your token from Sovereign Civic Tech to continue.',
+      btnTxt:'ACTIVATE TOKEN', showExp:true, showCo:false
+    },
+    expired:{
+      icon:'🔑', hl:'Subscription Token Required', hlColor:'#fbbf24',
+      msg: customMsg||'Your subscription token has expired. Enter your renewal token to restore access.',
+      btnTxt:'ACTIVATE TOKEN', showExp:true, showCo:false
+    },
+    setup:{
+      icon:'🔐', hl:'Activate Your System', hlColor:'#fff',
+      msg: customMsg||'Welcome! Enter your activation token from Sovereign Civic Tech to get started.',
+      btnTxt:'ACTIVATE SUBSCRIPTION', showExp:true, showCo:true
+    },
+    renew:{
+      icon:'🔑', hl:'Enter Renewal Token', hlColor:'#fff',
+      msg:'Enter your new token from Sovereign Civic Tech to extend access.',
+      btnTxt:'ACTIVATE TOKEN', showExp:true, showCo:false
+    }
+  };
+  const c=configs[reason]||configs.setup;
+  $('g-icon').textContent=c.icon;
+  $('g-hl').textContent=c.hl; $('g-hl').style.color=c.hlColor;
+  $('g-msg').textContent=c.msg;
+  $('g-btn').textContent=c.btnTxt; $('g-btn').disabled=false;
+  $('g-tok').value='';
+  $('g-err').style.display='none'; $('g-ok').style.display='none';
+  $('g-exp-wrap').style.display=c.showExp?'block':'none';
+  $('g-co-wrap').style.display=c.showCo?'block':'none';
+  $('sct-gate').style.display='flex';
+}
+
+async function gActivate(){
+  const token=$('g-tok').value.trim().toUpperCase();
+  const expires_at=$('g-exp').value;
+  const company_name=$('g-co')?.value.trim();
+  const err=$('g-err'),ok=$('g-ok'),btn=$('g-btn');
+  err.style.display='none'; ok.style.display='none';
+
+  if(!token){err.textContent='Please enter your activation token.';err.style.display='block';return;}
+  if(!token.startsWith('SCT-')){
+    err.textContent='Invalid token format — tokens start with SCT- (e.g. SCT-ISO-HRS-A1B2C3D4)';
+    err.style.display='block';return;
+  }
+
+  btn.textContent='Activating...'; btn.disabled=true;
+
+  try{
+    const r=await fetch('/api/subscription/activate',{
+      method:'POST',headers:H,
+      body:JSON.stringify({token, expires_at:expires_at||null, company_name:company_name||null})
+    });
+    const d=await r.json();
+    if(r.ok&&d.valid){
+      ok.textContent=d.message+(d.days_left?` ${d.days_left} days active.`:'');
+      ok.style.display='block';
+      if(d.primary_color) document.documentElement.style.setProperty('--a',d.primary_color);
+      setTimeout(()=>{ $('sct-gate').style.display='none'; location.reload(); },1800);
+    }else{
+      err.textContent=d.message||'Activation failed. Check your token and try again.';
+      err.style.display='block';
+      btn.textContent='ACTIVATE SUBSCRIPTION'; btn.disabled=false;
+    }
+  }catch(e){
+    err.textContent='Cannot reach the server. Make sure it is running.';
+    err.style.display='block';
+    btn.textContent='ACTIVATE SUBSCRIPTION'; btn.disabled=false;
+  }
+}
+$('g-tok').addEventListener('keypress',e=>{ if(e.key==='Enter') gActivate(); });
+
+// ── init
+loadBrand();
+gCheck();
+</script>
+</body>
+</html>
