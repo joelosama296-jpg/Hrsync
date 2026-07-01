@@ -57,3 +57,4 @@ app.listen(PORT, () => {
     console.log('╚══════════════════════════════════════╝');
     console.log('');
 });
+module.exports = app;
