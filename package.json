@@ -10,6 +10,7 @@
     "setup": "node setup.js"
   },
   "dependencies": {
+    "@vercel/node": "^5.8.22",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
